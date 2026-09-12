@@ -30,12 +30,14 @@ namespace Coffeehouse.Api.Controllers
         [HttpGet("api/elections/{electionId}/contests")]
         public async Task<ActionResult<IEnumerable<Contest>>> GetContestsForElection(int electionId)
         {
+            // Verify the election exists before attempting to fetch contests
             var electionExists = await _context.Elections.AnyAsync(e => e.Id == electionId);
             if (!electionExists)
             {
                 return NotFound();
             }
 
+            // Retrieve all contests for the specified election, eager loading the candidates for each contest
             return await _context.Contests
                 .Where(c => c.ElectionId == electionId)
                 .Include(c => c.Candidates)

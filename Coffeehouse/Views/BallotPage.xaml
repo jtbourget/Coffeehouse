@@ -6,7 +6,7 @@
              x:Class="Coffeehouse.Views.BallotPage"
              Title="Your Ballot">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
+    <Grid RowDefinitions="Auto,*" Padding="10">
         
         <!-- Header -->
         <VerticalStackLayout Grid.Row="0" Spacing="5" Margin="0,0,0,15">
@@ -30,7 +30,7 @@
                             <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BallotViewModel}}, Path=ViewCandidateCommand}" CommandParameter="{Binding .}" />
                         </Grid.GestureRecognizers>
                         
-                        <Image Source="{Binding Candidate.PhotoUrl}" WidthRequest="40" HeightRequest="40" Aspect="AspectFill" Grid.Column="0" />
+                        <Image Source="{Binding PhotoUrl}" WidthRequest="40" HeightRequest="40" Aspect="AspectFill" Grid.Column="0" />
                         
                         <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="10,0,0,0">
                             <Label Text="{Binding Candidate.Name}" FontSize="16" FontAttributes="Bold" />
@@ -49,9 +49,6 @@
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-
-        <!-- Footer -->
-        <Button Grid.Row="2" Text="View My Voting List" Command="{Binding ViewVotingListCommand}" Margin="0,10,0,0" />
 
     </Grid>
 </ContentPage>

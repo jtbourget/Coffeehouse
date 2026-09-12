@@ -17,32 +17,50 @@ namespace Coffeehouse.ViewModels
         private string _state = string.Empty;
         private string _zipCode = string.Empty;
 
+        /// <summary>
+        /// Gets or sets the street component of the user's address.
+        /// </summary>
         public string Street
         {
             get => _street;
             set { if (_street != value) { _street = value; OnPropertyChanged(); } }
         }
 
+        /// <summary>
+        /// Gets or sets the city component of the user's address.
+        /// </summary>
         public string City
         {
             get => _city;
             set { if (_city != value) { _city = value; OnPropertyChanged(); } }
         }
 
+        /// <summary>
+        /// Gets or sets the state component of the user's address.
+        /// </summary>
         public string State
         {
             get => _state;
             set { if (_state != value) { _state = value; OnPropertyChanged(); } }
         }
 
+        /// <summary>
+        /// Gets or sets the ZIP code component of the user's address.
+        /// </summary>
         public string ZipCode
         {
             get => _zipCode;
             set { if (_zipCode != value) { _zipCode = value; OnPropertyChanged(); } }
         }
 
+        /// <summary>
+        /// Gets the command used to find the ballot for the entered address.
+        /// </summary>
         public ICommand FindBallotCommand { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AddressViewModel"/> class.
+        /// </summary>
         public AddressViewModel()
         {
             FindBallotCommand = new Command(async () => await FindBallotAsync());
@@ -65,6 +83,7 @@ namespace Coffeehouse.ViewModels
         {
             try 
             {
+                // Validate that all required address components are provided
                 if (string.IsNullOrWhiteSpace(Street) || string.IsNullOrWhiteSpace(City) || 
                     string.IsNullOrWhiteSpace(State) || string.IsNullOrWhiteSpace(ZipCode))
                 {
@@ -73,6 +92,7 @@ namespace Coffeehouse.ViewModels
                     return;
                 }
 
+                // Construct a new UserAddress model with the provided details
                 var address = new UserAddress
                 {
                     Street = Street,

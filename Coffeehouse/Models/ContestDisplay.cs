@@ -6,7 +6,7 @@ namespace Coffeehouse.Models
     /// Wraps a Contest with its candidates as CandidateDisplay items for the ballot view.
     /// Used for grouped display in the BallotPage CollectionView.
     /// </summary>
-    public class ContestDisplay
+    public class ContestDisplay : ObservableCollection<CandidateDisplay>
     {
         /// <summary>
         /// The office name for this contest.
@@ -17,10 +17,5 @@ namespace Coffeehouse.Models
         /// The contest ID.
         /// </summary>
         public int ContestId { get; set; }
-
-        /// <summary>
-        /// The candidates running, with favorite state.
-        /// </summary>
-        public ObservableCollection<CandidateDisplay> Candidates { get; set; } = new();
     }
 }

@@ -15,12 +15,18 @@ namespace Coffeehouse.ViewModels
         private bool _isFavorited;
         private int _contestId;
 
+        /// <summary>
+        /// Gets or sets the current candidate being detailed.
+        /// </summary>
         public Candidate? CurrentCandidate
         {
             get => _currentCandidate;
             set { if (_currentCandidate != value) { _currentCandidate = value; OnPropertyChanged(); } }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the current candidate is favorited.
+        /// </summary>
         public bool IsFavorited
         {
             get => _isFavorited;
@@ -35,17 +41,35 @@ namespace Coffeehouse.ViewModels
             }
         }
 
+        /// <summary>
+        /// Gets the text to display for the favorite icon, depending on favorited state.
+        /// </summary>
         public string FavoriteIcon => IsFavorited ? "★ Remove Favorite" : "☆ Mark as Favorite";
 
+        /// <summary>
+        /// Gets the command used to toggle the favorite state for the candidate.
+        /// </summary>
         public ICommand ToggleFavoriteCommand { get; }
+
+        /// <summary>
+        /// Gets the command used to open the candidate's campaign website.
+        /// </summary>
         public ICommand OpenWebsiteCommand { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CandidateDetailViewModel"/> class.
+        /// </summary>
         public CandidateDetailViewModel()
         {
             ToggleFavoriteCommand = new Command(async () => await ToggleFavoriteAsync());
             OpenWebsiteCommand = new Command(async () => await OpenWebsiteAsync());
         }
 
+        /// <summary>
+        /// Loads the details for the specified candidate and contest.
+        /// </summary>
+        /// <param name="candidateId">The candidate's unique identifier.</param>
+        /// <param name="contestId">The contest's unique identifier.</param>
         public async Task LoadCandidateAsync(int candidateId, int contestId)
         {
             _contestId = contestId;
