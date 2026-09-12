@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Coffeehouse.ViewModels"
+             xmlns:models="clr-namespace:Coffeehouse.Models"
+             x:Class="Coffeehouse.Views.VotingListPage"
+             Title="My Voting List">
+
+    <Grid RowDefinitions="Auto,*" Padding="10">
+        <VerticalStackLayout Grid.Row="0" Margin="0,0,0,15">
+            <Label Text="Your Selections" FontSize="20" FontAttributes="Bold" />
+            <Label Text="Take this with you to the polls." FontSize="14" TextColor="Gray" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="1" ItemsSource="{Binding VotingList}">
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:VotingListItem">
+                    <Border Margin="0,5" Padding="10"
+                            StrokeShape="RoundRectangle 8"
+                            Stroke="LightGray" StrokeThickness="1">
+                        <Grid ColumnDefinitions="40, *">
+                            <Image Source="{Binding PhotoUrl}" WidthRequest="30" HeightRequest="30" Aspect="AspectFill" Grid.Column="0" VerticalOptions="Center" />
+                            
+                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
+                                <Label Text="{Binding OfficeName}" FontSize="12" TextColor="Gray" />
+                                <Label Text="{Binding CandidateName}" FontSize="16" FontAttributes="Bold">
+                                    <Label.Triggers>
+                                        <DataTrigger TargetType="Label" Binding="{Binding HasSelection}" Value="False">
+                                            <Setter Property="TextColor" Value="Gray" />
+                                        </DataTrigger>
+                                    </Label.Triggers>
+                                </Label>
+                                <Label Text="{Binding Party}" FontSize="12" />
+                            </VerticalStackLayout>
+                        </Grid>
+                    </Border>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </Grid>
+</ContentPage>

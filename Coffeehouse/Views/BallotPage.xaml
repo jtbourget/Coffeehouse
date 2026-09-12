@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Coffeehouse.ViewModels"
+             xmlns:models="clr-namespace:Coffeehouse.Models"
+             x:Class="Coffeehouse.Views.BallotPage"
+             Title="Your Ballot">
+
+    <Grid RowDefinitions="Auto,*,Auto" Padding="10">
+        
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Spacing="5" Margin="0,0,0,15">
+            <Label Text="{Binding CurrentElection.Name}" FontSize="20" FontAttributes="Bold" />
+            <Label Text="{Binding CurrentElection.ElectionDate, StringFormat='{0:MMMM dd, yyyy}'}" FontSize="14" />
+            <Label Text="{Binding CurrentElection.VotingLocationName}" FontSize="14" TextColor="Gray" />
+        </VerticalStackLayout>
+
+        <!-- Contests and Candidates -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Contests}" IsGrouped="True">
+            <CollectionView.GroupHeaderTemplate>
+                <DataTemplate x:DataType="models:ContestDisplay">
+                    <Label Text="{Binding OfficeName}" FontSize="18" FontAttributes="Bold" BackgroundColor="{AppThemeBinding Light=#f0f0f0, Dark=#333333}" Padding="10" Margin="0,10,0,5" />
+                </DataTemplate>
+            </CollectionView.GroupHeaderTemplate>
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:CandidateDisplay">
+                    <Grid ColumnDefinitions="50, *, Auto" Padding="10" Margin="0,2">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BallotViewModel}}, Path=ViewCandidateCommand}" CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                        
+                        <Image Source="{Binding Candidate.PhotoUrl}" WidthRequest="40" HeightRequest="40" Aspect="AspectFill" Grid.Column="0" />
+                        
+                        <VerticalStackLayout Grid.Column="1" VerticalOptions="Center" Margin="10,0,0,0">
+                            <Label Text="{Binding Candidate.Name}" FontSize="16" FontAttributes="Bold" />
+                            <Label Text="{Binding Candidate.Party}" FontSize="12" TextColor="Gray" />
+                        </VerticalStackLayout>
+                        
+                        <Button Grid.Column="2" 
+                                Text="{Binding FavoriteIcon}" 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:BallotViewModel}}, Path=ToggleFavoriteCommand}"
+                                CommandParameter="{Binding .}"
+                                BackgroundColor="Transparent" 
+                                TextColor="{AppThemeBinding Light=Black, Dark=White}" 
+                                FontSize="24"
+                                WidthRequest="50" HeightRequest="50" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Footer -->
+        <Button Grid.Row="2" Text="View My Voting List" Command="{Binding ViewVotingListCommand}" Margin="0,10,0,0" />
+
+    </Grid>
+</ContentPage>

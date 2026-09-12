@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="Coffeehouse.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:local="clr-namespace:Coffeehouse"
+    xmlns:views="clr-namespace:Coffeehouse.Views"
+    Title="Coffeehouse">
+
+    <TabBar>
+        <Tab Icon="home.png">
+            <ShellContent
+                ContentTemplate="{DataTemplate views:AddressPage}"
+                Route="AddressPage" />
+        </Tab>
+        <Tab Icon="ballot.png">
+            <ShellContent
+                ContentTemplate="{DataTemplate views:VotingListPage}"
+                Route="VotingListPage" />
+        </Tab>
+    </TabBar>
+
+</Shell>

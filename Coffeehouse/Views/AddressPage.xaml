@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Coffeehouse.ViewModels"
+             x:Class="Coffeehouse.Views.AddressPage">
+    <ContentPage.BindingContext>
+        <vm:AddressViewModel />
+    </ContentPage.BindingContext>
+
+    <ScrollView>
+        <VerticalStackLayout Padding="20" Spacing="15">
+
+            <Label Text="Discover your ballot" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            
+            <Entry Placeholder="Street Address" Text="{Binding Street}" />
+            <Entry Placeholder="City" Text="{Binding City}" />
+            <Entry Placeholder="State" Text="{Binding State}" />
+            <Entry Placeholder="ZIP Code" Text="{Binding ZipCode}" Keyboard="Numeric" />
+
+            <Button Text="Find My Ballot" Command="{Binding FindBallotCommand}" Margin="0,20,0,0" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
