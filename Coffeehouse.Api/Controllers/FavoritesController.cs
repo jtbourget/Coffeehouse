@@ -30,6 +30,8 @@ namespace Coffeehouse.Api.Controllers
         [HttpGet("api/elections/{electionId}/favorites")]
         public async Task<ActionResult<IEnumerable<FavoriteCandidate>>> GetFavoritesForElection(int electionId)
         {
+            // Retrieve all favorite candidates for the given election by checking the related contest's ElectionId
+            // Eager load both the Contest and Candidate details for the response
             return await _context.FavoriteCandidates
                 .Include(f => f.Contest)
                 .Include(f => f.Candidate)
@@ -46,11 +48,13 @@ namespace Coffeehouse.Api.Controllers
         [HttpPut("api/favorites/{contestId}/{candidateId}")]
         public async Task<IActionResult> SetFavorite(int contestId, int candidateId)
         {
+            // Search for an existing favorite entry for the specified contest
             var favorite = await _context.FavoriteCandidates
                 .FirstOrDefaultAsync(f => f.ContestId == contestId);
 
             if (favorite == null)
             {
+                // If the user hasn't favorited a candidate for this contest yet, create a new entry
                 favorite = new FavoriteCandidate
                 {
                     ContestId = contestId,
@@ -60,6 +64,7 @@ namespace Coffeehouse.Api.Controllers
             }
             else
             {
+                // If an entry already exists, update it to the newly selected candidate
                 favorite.CandidateId = candidateId;
             }
 
@@ -75,11 +80,13 @@ namespace Coffeehouse.Api.Controllers
         [HttpDelete("api/favorites/{contestId}")]
         public async Task<IActionResult> RemoveFavorite(int contestId)
         {
+            // Search for the existing favorite entry for the specified contest
             var favorite = await _context.FavoriteCandidates
                 .FirstOrDefaultAsync(f => f.ContestId == contestId);
 
             if (favorite != null)
             {
+                // If found, remove the favorite entry from the database
                 _context.FavoriteCandidates.Remove(favorite);
                 await _context.SaveChangesAsync();
             }

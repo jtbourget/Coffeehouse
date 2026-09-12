@@ -30,12 +30,14 @@ namespace Coffeehouse.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<UserAddress>> GetAddress()
         {
+            // Retrieve the most recently added address by ordering descending by ID
             var address = await _context.UserAddresses
                 .OrderByDescending(a => a.Id)
                 .FirstOrDefaultAsync();
 
             if (address == null)
             {
+                // Return 404 Not Found if no address has been saved yet
                 return NotFound();
             }
 
@@ -50,14 +52,17 @@ namespace Coffeehouse.Api.Controllers
         [HttpPost]
         public async Task<ActionResult<UserAddress>> SaveAddress(UserAddress address)
         {
+            // Check if there is an existing address in the database
             var existingAddress = await _context.UserAddresses.FirstOrDefaultAsync();
 
             if (existingAddress == null)
             {
+                // If no address exists, add the new one
                 _context.UserAddresses.Add(address);
             }
             else
             {
+                // Otherwise, update the existing address with the new values
                 existingAddress.Street = address.Street;
                 existingAddress.City = address.City;
                 existingAddress.State = address.State;

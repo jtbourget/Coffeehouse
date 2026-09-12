@@ -6,6 +6,13 @@ public partial class VotingListPage : ContentPage
 {
     private readonly VotingListViewModel _viewModel;
 
+    public VotingListPage()
+    {
+        InitializeComponent();
+        _viewModel = new VotingListViewModel();
+        BindingContext = _viewModel;
+    }
+
     public VotingListPage(int electionId)
     {
         InitializeComponent();

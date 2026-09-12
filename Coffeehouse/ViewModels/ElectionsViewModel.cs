@@ -13,11 +13,24 @@ namespace Coffeehouse.ViewModels
     /// </summary>
     public class ElectionsViewModel : INotifyPropertyChanged
     {
+        /// <summary>
+        /// Gets the collection of available elections.
+        /// </summary>
         public ObservableCollection<Election> Elections { get; } = new();
 
+        /// <summary>
+        /// Gets the command used to load the elections list.
+        /// </summary>
         public ICommand LoadElectionsCommand { get; }
+
+        /// <summary>
+        /// Gets the command used to select an election and view its ballot.
+        /// </summary>
         public ICommand SelectElectionCommand { get; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ElectionsViewModel"/> class.
+        /// </summary>
         public ElectionsViewModel()
         {
             LoadElectionsCommand = new Command(async () => await LoadElectionsAsync());

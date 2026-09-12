@@ -30,6 +30,20 @@ namespace Coffeehouse.ViewModels
 
         public async Task LoadVotingListAsync()
         {
+            if (ElectionId == 0)
+            {
+                var elections = await ApiService.Instance.GetElectionsAsync();
+                var firstElection = elections.FirstOrDefault();
+                if (firstElection != null)
+                {
+                    ElectionId = firstElection.Id;
+                }
+                else
+                {
+                    return;
+                }
+            }
+
             CurrentElection = await ApiService.Instance.GetElectionAsync(ElectionId);
             var contests = await ApiService.Instance.GetContestsAsync(ElectionId);
             var favorites = await ApiService.Instance.GetFavoritesAsync(ElectionId);
