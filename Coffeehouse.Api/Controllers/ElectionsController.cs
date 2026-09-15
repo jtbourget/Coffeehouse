@@ -30,6 +30,7 @@ namespace Coffeehouse.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Election>>> GetElections()
         {
+            // Retrieve all elections and eager load their associated contests
             return await _context.Elections
                 .Include(e => e.Contests)
                 .ToListAsync();
@@ -43,6 +44,7 @@ namespace Coffeehouse.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Election>> GetElection(int id)
         {
+            // Retrieve the specific election by ID, eager loading both its contests and the candidates within each contest
             var election = await _context.Elections
                 .Include(e => e.Contests)
                     .ThenInclude(c => c.Candidates)
