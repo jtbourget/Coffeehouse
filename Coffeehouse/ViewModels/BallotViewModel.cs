@@ -63,7 +63,7 @@ namespace Coffeehouse.ViewModels
                 foreach (var candidate in contest.Candidates)
                 {
                     var isFavorited = favoriteDict.TryGetValue(contest.Id, out int favId) && favId == candidate.Id;
-                    contestDisplay.Candidates.Add(new CandidateDisplay
+                    contestDisplay.Add(new CandidateDisplay
                     {
                         Candidate = candidate,
                         IsFavorited = isFavorited
@@ -100,7 +100,7 @@ namespace Coffeehouse.ViewModels
                     {
                         if (contest.ContestId == contestId)
                         {
-                            foreach (var c in contest.Candidates)
+                            foreach (var c in contest)
                             {
                                 c.IsFavorited = (c.Candidate.Id == candidateId);
                             }
