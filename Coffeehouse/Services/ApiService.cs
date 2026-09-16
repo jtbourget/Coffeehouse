@@ -9,18 +9,12 @@ namespace Coffeehouse.Services
     /// Service to interact with the backend API.
     /// Implemented as a singleton.
     /// </summary>
-    public class ApiService
+    public class ApiService : IApiService
     {
-        private static ApiService? _instance;
         private readonly HttpClient _httpClient;
         private readonly JsonSerializerOptions _jsonOptions;
 
-        /// <summary>
-        /// Gets the singleton instance of ApiService.
-        /// </summary>
-        public static ApiService Instance => _instance ??= new ApiService();
-
-        private ApiService()
+        public ApiService()
         {
             _httpClient = new HttpClient { BaseAddress = new Uri("http://localhost:5032") };
             _jsonOptions = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
@@ -63,8 +57,6 @@ namespace Coffeehouse.Services
                 if (!response.IsSuccessStatusCode)
                 {
                     Debug.WriteLine($"API returned: {response.StatusCode}");
-                    if (Shell.Current != null)
-                        await Shell.Current.DisplayAlert("API Error", $"Server returned {response.StatusCode}", "OK");
                     return false;
                 }
                 return true;
@@ -72,8 +64,6 @@ namespace Coffeehouse.Services
             catch (Exception ex)
             {
                 Debug.WriteLine($"Error saving address: {ex.Message}");
-                if (Shell.Current != null)
-                    Shell.Current.DisplayAlert("Connection Error", ex.Message, "OK");
                 return false;
             }
         }

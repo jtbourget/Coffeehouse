@@ -15,16 +15,11 @@ public partial class BallotPage : ContentPage
         } 
     }
 
-    public BallotPage()
+    public BallotPage(BallotViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = new BallotViewModel();
+        _viewModel = viewModel;
         BindingContext = _viewModel;
-    }
-
-    public BallotPage(int electionId) : this()
-    {
-        ElectionId = electionId;
     }
 
     protected override void OnAppearing()

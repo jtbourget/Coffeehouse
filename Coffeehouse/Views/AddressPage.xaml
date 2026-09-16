@@ -9,8 +9,6 @@
 
     <ScrollView>
         <VerticalStackLayout Padding="20" Spacing="15">
-
-            <Label Text="Discover your ballot" FontSize="18" FontAttributes="Bold" HorizontalTextAlignment="Center" />
             
             <Entry Placeholder="Street Address" Text="{Binding Street}" />
             <Entry Placeholder="City" Text="{Binding City}" />

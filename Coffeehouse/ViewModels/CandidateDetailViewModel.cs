@@ -9,11 +9,27 @@ namespace Coffeehouse.ViewModels
     /// <summary>
     /// ViewModel for displaying candidate details.
     /// </summary>
+    [QueryProperty(nameof(CandidateId), "candidateId")]
+    [QueryProperty(nameof(ContestId), "contestId")]
     public class CandidateDetailViewModel : INotifyPropertyChanged
     {
+        private readonly IApiService _apiService;
         private Candidate? _currentCandidate;
         private bool _isFavorited;
         private int _contestId;
+        private int _candidateId;
+
+        public int CandidateId
+        {
+            get => _candidateId;
+            set { _candidateId = value; }
+        }
+
+        public int ContestId
+        {
+            get => _contestId;
+            set { _contestId = value; }
+        }
 
         /// <summary>
         /// Gets or sets the current candidate being detailed.
@@ -59,8 +75,9 @@ namespace Coffeehouse.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="CandidateDetailViewModel"/> class.
         /// </summary>
-        public CandidateDetailViewModel()
+        public CandidateDetailViewModel(IApiService apiService)
         {
+            _apiService = apiService;
             ToggleFavoriteCommand = new Command(async () => await ToggleFavoriteAsync());
             OpenWebsiteCommand = new Command(async () => await OpenWebsiteAsync());
         }
@@ -73,7 +90,7 @@ namespace Coffeehouse.ViewModels
         public async Task LoadCandidateAsync(int candidateId, int contestId)
         {
             _contestId = contestId;
-            CurrentCandidate = await ApiService.Instance.GetCandidateAsync(candidateId);
+            CurrentCandidate = await _apiService.GetCandidateAsync(candidateId);
             
             // Need to know if this candidate is the favorite
             // We can check all favorites for the current election.
@@ -98,12 +115,12 @@ namespace Coffeehouse.ViewModels
 
             if (IsFavorited)
             {
-                var success = await ApiService.Instance.RemoveFavoriteAsync(_contestId);
+                var success = await _apiService.RemoveFavoriteAsync(_contestId);
                 if (success) IsFavorited = false;
             }
             else
             {
-                var success = await ApiService.Instance.SetFavoriteAsync(_contestId, CurrentCandidate.Id);
+                var success = await _apiService.SetFavoriteAsync(_contestId, CurrentCandidate.Id);
                 if (success) IsFavorited = true;
             }
         }

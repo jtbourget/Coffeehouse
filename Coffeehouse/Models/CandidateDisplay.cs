@@ -17,11 +17,7 @@ namespace Coffeehouse.Models
         public Candidate Candidate { get; set; } = new();
 
         /// <summary>
-<<<<<<< HEAD
-        /// Pass-through property for PhotoUrl to avoid nested binding issues.
-=======
         /// Pass-through property for PhotoUrl to avoid nested binding issues in MAUI CollectionView.
->>>>>>> 1c6e4c5e0c151cb1c1faf410a3bc0daa180b6ca2
         /// </summary>
         public string PhotoUrl => Candidate?.PhotoUrl ?? string.Empty;
 

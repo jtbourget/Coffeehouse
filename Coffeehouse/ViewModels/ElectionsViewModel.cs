@@ -28,24 +28,46 @@ namespace Coffeehouse.ViewModels
         /// </summary>
         public ICommand SelectElectionCommand { get; }
 
+        private readonly IApiService _apiService;
+        private bool _isBusy;
+        public bool IsBusy
+        {
+            get => _isBusy;
+            set
+            {
+                if (_isBusy != value)
+                {
+                    _isBusy = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="ElectionsViewModel"/> class.
         /// </summary>
-        public ElectionsViewModel()
+        public ElectionsViewModel(IApiService apiService)
         {
-            LoadElectionsCommand = new Command(async () => await LoadElectionsAsync());
+            _apiService = apiService;
+            LoadElectionsCommand = new Command(async () => await InitializeAsync());
             SelectElectionCommand = new Command<Election>(async (election) => await SelectElectionAsync(election));
-
-            _ = LoadElectionsAsync();
         }
 
-        private async Task LoadElectionsAsync()
+        public async Task InitializeAsync()
         {
-            var elections = await ApiService.Instance.GetElectionsAsync();
-            Elections.Clear();
-            foreach (var election in elections)
+            IsBusy = true;
+            try
             {
-                Elections.Add(election);
+                var elections = await _apiService.GetElectionsAsync();
+                Elections.Clear();
+                foreach (var election in elections)
+                {
+                    Elections.Add(election);
+                }
+            }
+            finally
+            {
+                IsBusy = false;
             }
         }
 

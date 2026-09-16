@@ -4,15 +4,19 @@ namespace Coffeehouse.Views;
 
 public partial class CandidateDetailPage : ContentPage
 {
-    private readonly CandidateDetailViewModel _viewModel;
-
-    public CandidateDetailPage(int candidateId, int contestId)
+    public CandidateDetailPage(CandidateDetailViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = new CandidateDetailViewModel();
-        BindingContext = _viewModel;
+        BindingContext = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
         
-        // Fire and forget the loading of candidate details
-        _ = _viewModel.LoadCandidateAsync(candidateId, contestId);
+        if (BindingContext is CandidateDetailViewModel viewModel)
+        {
+            await viewModel.LoadCandidateAsync(viewModel.CandidateId, viewModel.ContestId);
+        }
     }
 }

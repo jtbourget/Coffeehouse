@@ -4,9 +4,19 @@ namespace Coffeehouse.Views;
 
 public partial class ElectionsPage : ContentPage
 {
-    public ElectionsPage()
+    public ElectionsPage(ElectionsViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = new ElectionsViewModel();
+        BindingContext = viewModel;
+    }
+
+    protected override async void OnAppearing()
+    {
+        base.OnAppearing();
+        
+        if (BindingContext is ElectionsViewModel viewModel)
+        {
+            await viewModel.InitializeAsync();
+        }
     }
 }
