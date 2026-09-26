@@ -75,7 +75,7 @@ namespace Coffeehouse.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync("/api/elections");
+                var response = await _httpClient.GetAsync("/api/civic/elections");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -96,7 +96,7 @@ namespace Coffeehouse.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/elections/{id}");
+                var response = await _httpClient.GetAsync($"/api/civic/elections/{id}");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -117,7 +117,7 @@ namespace Coffeehouse.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/elections/{electionId}/contests");
+                var response = await _httpClient.GetAsync($"/api/civic/elections/{electionId}/contests");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -138,7 +138,7 @@ namespace Coffeehouse.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/contests/{contestId}/candidates");
+                var response = await _httpClient.GetAsync($"/api/civic/contests/{contestId}/candidates");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -159,7 +159,7 @@ namespace Coffeehouse.Services
         {
             try
             {
-                var response = await _httpClient.GetAsync($"/api/candidates/{id}");
+                var response = await _httpClient.GetAsync($"/api/civic/candidates/{id}");
                 if (response.IsSuccessStatusCode)
                 {
                     var content = await response.Content.ReadAsStringAsync();
@@ -227,6 +227,42 @@ namespace Coffeehouse.Services
                 Debug.WriteLine($"Error removing favorite for contest {contestId}: {ex.Message}");
                 return false;
             }
+        }
+
+        public async Task<List<AddressSuggestion>> GetAddressSuggestionsAsync(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query)) return new List<AddressSuggestion>();
+
+            try
+            {
+                var response = await _httpClient.GetAsync($"/api/places/autocomplete?query={Uri.EscapeDataString(query)}");
+                response.EnsureSuccessStatusCode();
+                var content = await response.Content.ReadAsStringAsync();
+                return JsonSerializer.Deserialize<List<AddressSuggestion>>(content, _jsonOptions) ?? new();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error fetching address suggestions: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<UserAddress?> GetPlaceDetailsAsync(string placeId)
+        {
+            try
+            {
+                var response = await _httpClient.GetAsync($"/api/places/details/{placeId}");
+                if (response.IsSuccessStatusCode)
+                {
+                    var content = await response.Content.ReadAsStringAsync();
+                    return JsonSerializer.Deserialize<UserAddress>(content, _jsonOptions);
+                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error fetching place details: {ex.Message}");
+            }
+            return null;
         }
     }
 }

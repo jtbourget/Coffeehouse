@@ -6,23 +6,16 @@ public partial class VotingListPage : ContentPage
 {
     private readonly VotingListViewModel _viewModel;
 
-    public VotingListPage()
+    public VotingListPage(VotingListViewModel viewModel)
     {
         InitializeComponent();
-        _viewModel = new VotingListViewModel();
+        _viewModel = viewModel;
         BindingContext = _viewModel;
     }
 
-    public VotingListPage(int electionId)
-    {
-        InitializeComponent();
-        _viewModel = new VotingListViewModel { ElectionId = electionId };
-        BindingContext = _viewModel;
-    }
-
-    protected override void OnAppearing()
+    protected override async void OnAppearing()
     {
         base.OnAppearing();
-        _ = _viewModel.LoadVotingListAsync();
+        await _viewModel.LoadElectionsAsync();
     }
 }

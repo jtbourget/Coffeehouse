@@ -14,4 +14,6 @@ public interface IApiService
     Task<List<FavoriteCandidate>> GetFavoritesAsync(int electionId);
     Task<bool> SetFavoriteAsync(int contestId, int candidateId);
     Task<bool> RemoveFavoriteAsync(int contestId);
+    Task<List<AddressSuggestion>> GetAddressSuggestionsAsync(string query);
+    Task<UserAddress?> GetPlaceDetailsAsync(string placeId);
 }

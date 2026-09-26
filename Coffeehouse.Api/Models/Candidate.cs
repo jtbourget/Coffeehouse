@@ -58,5 +58,10 @@ namespace Coffeehouse.Api.Models
         [JsonIgnore]
         [ForeignKey(nameof(ContestId))]
         public Contest? Contest { get; set; }
+
+        /// <summary>
+        /// User-uploaded videos.
+        /// </summary>
+        public List<Video> Videos { get; set; } = new();
     }
 }

@@ -30,6 +30,12 @@ namespace Coffeehouse.Api.Models
         public string OfficeName { get; set; } = string.Empty;
 
         /// <summary>
+        /// The Open Civic Data Identifier (OCD-ID) representing the district/geography of this contest.
+        /// </summary>
+        [MaxLength(200)]
+        public string OcdId { get; set; } = string.Empty;
+
+        /// <summary>
         /// Navigation property — the parent election this contest belongs to.
         /// JsonIgnore prevents circular reference during serialization.
         /// </summary>

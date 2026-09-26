@@ -42,5 +42,10 @@ namespace Coffeehouse.Api.Models
         /// Navigation property — the contests/races on this ballot.
         /// </summary>
         public List<Contest> Contests { get; set; } = new();
+
+        /// <summary>
+        /// Navigation property — the referendums/measures on this ballot.
+        /// </summary>
+        public List<Referendum> Referendums { get; set; } = new();
     }
 }

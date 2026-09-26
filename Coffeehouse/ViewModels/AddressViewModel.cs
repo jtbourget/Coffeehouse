@@ -23,8 +23,18 @@ namespace Coffeehouse.ViewModels
         public string Street
         {
             get => _street;
-            set { if (_street != value) { _street = value; OnPropertyChanged(); } }
+            set 
+            { 
+                if (_street != value) 
+                { 
+                    _street = value; 
+                    OnPropertyChanged(); 
+                    OnPropertyChanged(nameof(HasAddress));
+                } 
+            }
         }
+
+        public bool HasAddress => !string.IsNullOrEmpty(Street);
 
         /// <summary>
         /// Gets or sets the city component of the user's address.
@@ -58,24 +68,95 @@ namespace Coffeehouse.ViewModels
         /// </summary>
         public ICommand FindBallotCommand { get; }
 
+        private readonly IApiService _apiService;
+        private string _searchText = string.Empty;
+        
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                if (_searchText != value)
+                {
+                    _searchText = value;
+                    OnPropertyChanged();
+                    _ = PerformSearchAsync(value);
+                }
+            }
+        }
+
+        public System.Collections.ObjectModel.ObservableCollection<AddressSuggestion> Suggestions { get; } = new();
+
+        public ICommand SelectSuggestionCommand { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressViewModel"/> class.
         /// </summary>
-        public AddressViewModel()
+        public AddressViewModel(IApiService apiService)
         {
+            _apiService = apiService;
             FindBallotCommand = new Command(async () => await FindBallotAsync());
-            _ = LoadAddressAsync();
+            SelectSuggestionCommand = new Command<AddressSuggestion>(async (s) => await SelectSuggestionAsync(s));
         }
 
-        private async Task LoadAddressAsync()
+        public async Task InitializeAsync()
         {
-            var address = await ApiService.Instance.GetAddressAsync();
+            var address = await _apiService.GetAddressAsync();
             if (address != null)
             {
                 Street = address.Street;
                 City = address.City;
                 State = address.State;
                 ZipCode = address.ZipCode;
+            }
+        }
+
+        private async Task PerformSearchAsync(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query) || query.Length < 3)
+            {
+                MainThread.BeginInvokeOnMainThread(() => Suggestions.Clear());
+                return;
+            }
+
+            try
+            {
+                var results = await _apiService.GetAddressSuggestionsAsync(query);
+                MainThread.BeginInvokeOnMainThread(() => 
+                {
+                    Suggestions.Clear();
+                    if (results != null)
+                    {
+                        foreach (var r in results) Suggestions.Add(r);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MainThread.BeginInvokeOnMainThread(async () => 
+                {
+                    if (Shell.Current != null)
+                        await Shell.Current.DisplayAlert("Search Error", ex.Message, "OK");
+                });
+            }
+        }
+
+        private async Task SelectSuggestionAsync(AddressSuggestion? suggestion)
+        {
+            if (suggestion == null) return;
+
+            var details = await _apiService.GetPlaceDetailsAsync(suggestion.PlaceId);
+            if (details != null)
+            {
+                MainThread.BeginInvokeOnMainThread(() => 
+                {
+                    Street = details.Street;
+                    City = details.City;
+                    State = details.State;
+                    ZipCode = details.ZipCode;
+                    SearchText = string.Empty;
+                    Suggestions.Clear();
+                });
             }
         }
 
@@ -101,10 +182,11 @@ namespace Coffeehouse.ViewModels
                     ZipCode = ZipCode
                 };
 
-                bool success = await ApiService.Instance.SaveAddressAsync(address);
+                bool success = await _apiService.SaveAddressAsync(address);
                 if (!success) 
                 {
-                    // Do nothing, ApiService shows the detailed error
+                    if (Shell.Current != null)
+                        await Shell.Current.DisplayAlert("Error", "Failed to save address.", "OK");
                     return;
                 }
                 

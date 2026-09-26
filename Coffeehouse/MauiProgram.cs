@@ -36,6 +36,7 @@ namespace Coffeehouse
             builder.Services.AddTransient<Views.CandidateDetailPage>();
             builder.Services.AddTransient<Views.ElectionsPage>();
             builder.Services.AddTransient<Views.VotingListPage>();
+            builder.Services.AddTransient<Views.VotingListDetailsPage>();
 
             return builder.Build();
         }

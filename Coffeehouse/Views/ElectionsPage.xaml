@@ -6,28 +6,46 @@
              x:Class="Coffeehouse.Views.ElectionsPage"
              Title="Upcoming Elections">
 
-    <!-- Wrapper provides padding since CollectionView doesn't support it directly -->
-    <VerticalStackLayout Padding="10">
-        <CollectionView ItemsSource="{Binding Elections}" SelectionMode="None">
+    <Grid RowDefinitions="Auto,*" Padding="0" BackgroundColor="{AppThemeBinding Light=#f9f9f9, Dark=#1a1a1a}">
+        
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Padding="25,30,25,20" Spacing="5">
+            <Label Text="Your Upcoming Elections" FontSize="26" FontAttributes="Bold" />
+            <Label Text="Tap an election to view your localized ballot and candidates." FontSize="14" TextColor="Gray" />
+        </VerticalStackLayout>
+
+        <!-- Elections List -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Elections}" SelectionMode="None" Margin="15,0,15,0">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Election">
-                    <Border Margin="0,0,0,10" Padding="15"
-                            StrokeShape="RoundRectangle 8"
-                            Stroke="LightGray" StrokeThickness="1">
+                    <Border Margin="5,5,5,15" Padding="20"
+                            StrokeShape="RoundRectangle 12"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light=White, Dark=#2c2c2c}">
+                        
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.08" />
+                        </Border.Shadow>
+
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer 
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:ElectionsViewModel}}, Path=SelectElectionCommand}" 
                                 CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="5">
-                            <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" />
-                            <Label Text="{Binding ElectionDate, StringFormat='{0:MMMM dd, yyyy}'}" FontSize="14" TextColor="Gray" />
-                            <Label Text="{Binding VotingLocationName}" FontSize="14" Margin="0,5,0,0" />
-                            <Label Text="{Binding VotingLocationAddress}" FontSize="12" TextColor="Gray" />
-                        </VerticalStackLayout>
+                        
+                        <Grid ColumnDefinitions="*, Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+                                <Label Text="{Binding ElectionDate, StringFormat='{0:MMMM dd, yyyy}'}" FontSize="14" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                <Label Text="{Binding VotingLocationName}" FontSize="13" TextColor="Gray" Margin="0,5,0,0" />
+                            </VerticalStackLayout>
+                            
+                            <!-- Arrow Icon to indicate it's clickable -->
+                            <Label Grid.Column="1" Text="➔" FontSize="20" TextColor="{StaticResource Primary}" VerticalOptions="Center" FontAttributes="Bold" Opacity="0.5" />
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
-    </VerticalStackLayout>
+    </Grid>
 </ContentPage>

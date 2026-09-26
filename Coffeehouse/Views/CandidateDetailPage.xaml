@@ -12,12 +12,26 @@
             <Label Text="{Binding CurrentCandidate.Name}" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
             <Label Text="{Binding CurrentCandidate.Party}" FontSize="16" TextColor="Gray" HorizontalOptions="Center" />
 
-            <Button Text="{Binding FavoriteIcon}" Command="{Binding ToggleFavoriteCommand}" Margin="0,10" />
-
             <Label Text="Biography &amp; Platform" FontSize="18" FontAttributes="Bold" Margin="0,10,0,0" />
             <Label Text="{Binding CurrentCandidate.Bio}" FontSize="14" />
 
             <Button Text="Visit Campaign Website" Command="{Binding OpenWebsiteCommand}" Margin="0,20,0,0" />
+
+            <Label Text="Campaign Videos" FontSize="18" FontAttributes="Bold" Margin="0,20,0,0" />
+            <CollectionView ItemsSource="{Binding CurrentCandidate.Videos}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Margin="0,5">
+                            <Label Text="{Binding Title}" FontAttributes="Bold" />
+                            <Label Text="{Binding VideoUrl}" TextColor="Blue" TextDecorations="Underline" />
+                            <Label Text="{Binding UploadedAt, StringFormat='{0:MMM dd, yyyy}'}" FontSize="12" TextColor="Gray" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+                <CollectionView.EmptyView>
+                    <Label Text="No videos uploaded yet." FontAttributes="Italic" TextColor="Gray" />
+                </CollectionView.EmptyView>
+            </CollectionView>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

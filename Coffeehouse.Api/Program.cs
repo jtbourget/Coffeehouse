@@ -18,6 +18,9 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddHttpClient<Coffeehouse.Api.Services.GooglePlacesService>();
+builder.Services.AddHttpClient<Coffeehouse.Api.Services.GeocodioService>();
+
 // Build the web application pipeline.
 var app = builder.Build();
 

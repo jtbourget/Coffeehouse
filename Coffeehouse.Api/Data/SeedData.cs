@@ -1,5 +1,5 @@
 using Coffeehouse.Api.Models;
-
+using Microsoft.EntityFrameworkCore;
 namespace Coffeehouse.Api.Data
 {
     /// <summary>
@@ -13,8 +13,11 @@ namespace Coffeehouse.Api.Data
         /// <param name="context">The application database context.</param>
         public static void Initialize(AppDbContext context)
         {
-            // Ensure the database is created
-            context.Database.EnsureCreated();
+            // Ensure the database is created and apply pending migrations
+            context.Database.Migrate();
+
+            // Inject the massive custom Wisconsin database
+            WiCandidateSeeder.SeedWisconsinElections(context);
 
             if (context.Elections.Any())
             {

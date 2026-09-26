@@ -6,32 +6,42 @@
              x:Class="Coffeehouse.Views.VotingListPage"
              Title="My Voting List">
 
-    <Grid RowDefinitions="Auto,*" Padding="10">
-        <VerticalStackLayout Grid.Row="0" Margin="0,0,0,15">
-            <Label Text="Your Selections" FontSize="20" FontAttributes="Bold" />
-            <Label Text="Take this with you to the polls." FontSize="14" TextColor="Gray" />
+    <Grid RowDefinitions="Auto,*" Padding="0" BackgroundColor="{AppThemeBinding Light=#f9f9f9, Dark=#1a1a1a}">
+        
+        <!-- Header -->
+        <VerticalStackLayout Grid.Row="0" Padding="25,30,25,20" Spacing="5">
+            <Label Text="Your Voting Lists" FontSize="26" FontAttributes="Bold" />
+            <Label Text="Tap an election to view the candidates you've saved." FontSize="14" TextColor="Gray" />
         </VerticalStackLayout>
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding VotingList}">
+        <!-- Elections List -->
+        <CollectionView Grid.Row="1" ItemsSource="{Binding Elections}" SelectionMode="None" Margin="15,0,15,0">
             <CollectionView.ItemTemplate>
-                <DataTemplate x:DataType="models:VotingListItem">
-                    <Border Margin="0,5" Padding="10"
-                            StrokeShape="RoundRectangle 8"
-                            Stroke="LightGray" StrokeThickness="1">
-                        <Grid ColumnDefinitions="40, *">
-                            <Image Source="{Binding PhotoUrl}" WidthRequest="30" HeightRequest="30" Aspect="AspectFill" Grid.Column="0" VerticalOptions="Center" />
-                            
-                            <VerticalStackLayout Grid.Column="1" VerticalOptions="Center">
-                                <Label Text="{Binding OfficeName}" FontSize="12" TextColor="Gray" />
-                                <Label Text="{Binding CandidateName}" FontSize="16" FontAttributes="Bold">
-                                    <Label.Triggers>
-                                        <DataTrigger TargetType="Label" Binding="{Binding HasSelection}" Value="False">
-                                            <Setter Property="TextColor" Value="Gray" />
-                                        </DataTrigger>
-                                    </Label.Triggers>
-                                </Label>
-                                <Label Text="{Binding Party}" FontSize="12" />
+                <DataTemplate x:DataType="models:Election">
+                    <Border Margin="5,5,5,15" Padding="20"
+                            StrokeShape="RoundRectangle 12"
+                            StrokeThickness="0"
+                            BackgroundColor="{AppThemeBinding Light=White, Dark=#2c2c2c}">
+                        
+                        <Border.Shadow>
+                            <Shadow Brush="Black" Offset="0,4" Radius="10" Opacity="0.08" />
+                        </Border.Shadow>
+
+                        <Border.GestureRecognizers>
+                            <TapGestureRecognizer 
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:VotingListViewModel}}, Path=SelectElectionCommand}" 
+                                CommandParameter="{Binding .}" />
+                        </Border.GestureRecognizers>
+                        
+                        <Grid ColumnDefinitions="*, Auto">
+                            <VerticalStackLayout Grid.Column="0" Spacing="6" VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontSize="18" FontAttributes="Bold" TextColor="{StaticResource Primary}" />
+                                <Label Text="{Binding ElectionDate, StringFormat='{0:MMMM dd, yyyy}'}" FontSize="14" TextColor="{AppThemeBinding Light=Black, Dark=White}" />
+                                <Label Text="{Binding VotingLocationName}" FontSize="13" TextColor="Gray" Margin="0,5,0,0" />
                             </VerticalStackLayout>
+                            
+                            <!-- Arrow Icon to indicate it's clickable -->
+                            <Label Grid.Column="1" Text="➔" FontSize="20" TextColor="{StaticResource Primary}" VerticalOptions="Center" FontAttributes="Bold" Opacity="0.5" />
                         </Grid>
                     </Border>
                 </DataTemplate>

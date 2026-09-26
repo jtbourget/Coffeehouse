@@ -42,6 +42,21 @@ namespace Coffeehouse.Api.Data
         public DbSet<UserAddress> UserAddresses { get; set; } = null!;
 
         /// <summary>
+        /// Gets or sets the CandidateProfiles DbSet.
+        /// </summary>
+        public DbSet<CandidateProfile> CandidateProfiles { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets the Videos DbSet.
+        /// </summary>
+        public DbSet<Video> Videos { get; set; } = null!;
+
+        /// <summary>
+        /// Gets or sets the Referendums DbSet.
+        /// </summary>
+        public DbSet<Referendum> Referendums { get; set; } = null!;
+
+        /// <summary>
         /// Configures the schema needed for the context.
         /// </summary>
         /// <param name="modelBuilder">The builder being used to construct the model for this context.</param>

@@ -40,5 +40,10 @@ namespace Coffeehouse.Models
         /// Biographical info and platform summary.
         /// </summary>
         public string Bio { get; set; } = string.Empty;
+
+        /// <summary>
+        /// User-uploaded videos.
+        /// </summary>
+        public List<Video> Videos { get; set; } = new();
     }
 }
