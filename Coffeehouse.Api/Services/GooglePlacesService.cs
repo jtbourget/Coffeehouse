@@ -10,11 +10,16 @@ public class GooglePlacesService
     public GooglePlacesService(HttpClient httpClient, IConfiguration configuration)
     {
         _httpClient = httpClient;
-        _apiKey = configuration["GooglePlacesApiKey"] ?? throw new ArgumentNullException("GooglePlacesApiKey is missing.");
+        _apiKey = configuration["GooglePlacesApiKey"] ?? string.Empty;
     }
 
     public async Task<string> AutocompleteAsync(string query)
     {
+        if (string.IsNullOrWhiteSpace(_apiKey))
+        {
+            throw new HttpRequestException("Google Places API key is missing. Please configure 'GooglePlacesApiKey'.", null, System.Net.HttpStatusCode.ServiceUnavailable);
+        }
+
         var url = "https://places.googleapis.com/v1/places:autocomplete";
         
         var request = new HttpRequestMessage(HttpMethod.Post, url);
@@ -35,6 +40,11 @@ public class GooglePlacesService
 
     public async Task<string> GetPlaceDetailsAsync(string placeId)
     {
+        if (string.IsNullOrWhiteSpace(_apiKey))
+        {
+            throw new HttpRequestException("Google Places API key is missing. Please configure 'GooglePlacesApiKey'.", null, System.Net.HttpStatusCode.ServiceUnavailable);
+        }
+
         var url = $"https://places.googleapis.com/v1/places/{placeId}?fields=addressComponents";
         
         var request = new HttpRequestMessage(HttpMethod.Get, url);

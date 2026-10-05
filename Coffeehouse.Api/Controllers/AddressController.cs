@@ -1,7 +1,7 @@
-using Coffeehouse.Api.Data;
-using Coffeehouse.Api.Models;
+using Coffeehouse.Api.Models.DTOs;
+using Coffeehouse.Api.Repositories;
+using Coffeehouse.Api.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Controllers
 {
@@ -12,15 +12,18 @@ namespace Coffeehouse.Api.Controllers
     [Route("api/[controller]")]
     public class AddressController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IAddressRepository _repository;
+        private readonly IAddressMapper _mapper;
 
         /// <summary>
         /// Initializes a new instance of the AddressController.
         /// </summary>
-        /// <param name="context">The database context.</param>
-        public AddressController(AppDbContext context)
+        /// <param name="repository">The address repository.</param>
+        /// <param name="mapper">The address mapper.</param>
+        public AddressController(IAddressRepository repository, IAddressMapper mapper)
         {
-            _context = context;
+            _repository = repository;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -28,51 +31,30 @@ namespace Coffeehouse.Api.Controllers
         /// </summary>
         /// <returns>The address if found; otherwise, 404 Not Found.</returns>
         [HttpGet]
-        public async Task<ActionResult<UserAddress>> GetAddress()
+        public async Task<ActionResult<AddressResponseDto>> GetAddress()
         {
-            // Retrieve the most recently added address by ordering descending by ID
-            var address = await _context.UserAddresses
-                .OrderByDescending(a => a.Id)
-                .FirstOrDefaultAsync();
+            var address = await _repository.GetAddressAsync();
 
             if (address == null)
             {
-                // Return 404 Not Found if no address has been saved yet
                 return NotFound();
             }
 
-            return address;
+            return Ok(_mapper.ToAddressDto(address));
         }
 
         /// <summary>
         /// Saves a new address or updates the existing one.
         /// </summary>
-        /// <param name="address">The address to save.</param>
+        /// <param name="request">The address to save.</param>
         /// <returns>The saved address.</returns>
         [HttpPost]
-        public async Task<ActionResult<UserAddress>> SaveAddress(UserAddress address)
+        public async Task<ActionResult<AddressResponseDto>> SaveAddress(SaveAddressRequestDto request)
         {
-            // Check if there is an existing address in the database
-            var existingAddress = await _context.UserAddresses.FirstOrDefaultAsync();
-
-            if (existingAddress == null)
-            {
-                // If no address exists, add the new one
-                _context.UserAddresses.Add(address);
-            }
-            else
-            {
-                // Otherwise, update the existing address with the new values
-                existingAddress.Street = address.Street;
-                existingAddress.City = address.City;
-                existingAddress.State = address.State;
-                existingAddress.ZipCode = address.ZipCode;
-            }
-
-            await _context.SaveChangesAsync();
+            var entity = _mapper.ToEntity(request);
+            var savedAddress = await _repository.SaveAddressAsync(entity);
             
-            var savedAddress = existingAddress ?? address;
-            return Ok(savedAddress);
+            return Ok(_mapper.ToAddressDto(savedAddress));
         }
     }
 }

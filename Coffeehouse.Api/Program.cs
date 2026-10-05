@@ -18,6 +18,23 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
         builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<Coffeehouse.Api.Infrastructure.GlobalExceptionHandler>();
+
+// Register Repositories and Services
+builder.Services.AddScoped<Coffeehouse.Api.Repositories.IAddressRepository, Coffeehouse.Api.Repositories.SqlAddressRepository>();
+builder.Services.AddScoped<Coffeehouse.Api.Services.IAddressMapper, Coffeehouse.Api.Services.AddressMapper>();
+builder.Services.AddScoped<Coffeehouse.Api.Repositories.IElectionRepository, Coffeehouse.Api.Repositories.SqlElectionRepository>();
+builder.Services.AddScoped<Coffeehouse.Api.Services.IElectionMapper, Coffeehouse.Api.Services.ElectionMapper>();
+builder.Services.AddScoped<Coffeehouse.Api.Repositories.IContestRepository, Coffeehouse.Api.Repositories.SqlContestRepository>();
+builder.Services.AddScoped<Coffeehouse.Api.Services.IContestMapper, Coffeehouse.Api.Services.ContestMapper>();
+builder.Services.AddScoped<Coffeehouse.Api.Repositories.ICandidateRepository, Coffeehouse.Api.Repositories.SqlCandidateRepository>();
+builder.Services.AddScoped<Coffeehouse.Api.Services.ICandidateMapper, Coffeehouse.Api.Services.CandidateMapper>();
+builder.Services.AddScoped<Coffeehouse.Api.Repositories.ICandidateProfileRepository, Coffeehouse.Api.Repositories.SqlCandidateProfileRepository>();
+builder.Services.AddScoped<Coffeehouse.Api.Services.ICandidateProfileMapper, Coffeehouse.Api.Services.CandidateProfileMapper>();
+builder.Services.AddScoped<Coffeehouse.Api.Repositories.IFavoriteCandidateRepository, Coffeehouse.Api.Repositories.SqlFavoriteCandidateRepository>();
+builder.Services.AddScoped<Coffeehouse.Api.Services.IFavoriteCandidateMapper, Coffeehouse.Api.Services.FavoriteCandidateMapper>();
+
 builder.Services.AddHttpClient<Coffeehouse.Api.Services.GooglePlacesService>();
 builder.Services.AddHttpClient<Coffeehouse.Api.Services.GeocodioService>();
 
@@ -47,8 +64,12 @@ if (app.Environment.IsDevelopment())
 // Add middleware for authorization.
 app.UseAuthorization();
 
+// Add global exception handler
+app.UseExceptionHandler();
+
 // Map controller endpoints to the request pipeline.
 app.MapControllers();
 
 // Start the application and begin listening for incoming HTTP requests.
 app.Run();
+

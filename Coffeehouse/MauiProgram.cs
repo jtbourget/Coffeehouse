@@ -20,6 +20,11 @@ namespace Coffeehouse
 #endif
 
             // Services
+            var baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5032" : "http://localhost:5032";
+            builder.Services.AddHttpClient("CoffeehouseApi", client =>
+            {
+                client.BaseAddress = new Uri(baseAddress);
+            });
             builder.Services.AddSingleton<Services.IApiService, Services.ApiService>();
 
             // ViewModels

@@ -1,5 +1,6 @@
-using Coffeehouse.Api.Data;
-using Coffeehouse.Api.Models;
+using Coffeehouse.Api.Models.DTOs;
+using Coffeehouse.Api.Repositories;
+using Coffeehouse.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,48 +10,48 @@ namespace Coffeehouse.Api.Controllers;
 [Route("api/[controller]")]
 public class CandidateProfilesController : ControllerBase
 {
-    private readonly AppDbContext _context;
+    private readonly ICandidateProfileRepository _repository;
+    private readonly ICandidateProfileMapper _mapper;
 
-    public CandidateProfilesController(AppDbContext context)
+    public CandidateProfilesController(ICandidateProfileRepository repository, ICandidateProfileMapper mapper)
     {
-        _context = context;
+        _repository = repository;
+        _mapper = mapper;
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<CandidateProfile>> GetProfile(int id)
+    public async Task<ActionResult<CandidateProfileResponseDto>> GetProfile(int id)
     {
-        var profile = await _context.CandidateProfiles
-            .Include(p => p.Videos)
-            .FirstOrDefaultAsync(p => p.Id == id);
+        var profile = await _repository.GetProfileAsync(id);
 
         if (profile == null) return NotFound();
 
-        return profile;
+        return _mapper.ToDto(profile);
     }
 
     [HttpPost]
-    public async Task<ActionResult<CandidateProfile>> CreateProfile(CandidateProfile profile)
+    public async Task<ActionResult<CandidateProfileResponseDto>> CreateProfile(SaveCandidateProfileRequestDto request)
     {
-        _context.CandidateProfiles.Add(profile);
-        await _context.SaveChangesAsync();
+        var profile = _mapper.ToEntity(request);
+        var createdProfile = await _repository.CreateProfileAsync(profile);
 
-        return CreatedAtAction(nameof(GetProfile), new { id = profile.Id }, profile);
+        return CreatedAtAction(nameof(GetProfile), new { id = createdProfile.Id }, _mapper.ToDto(createdProfile));
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProfile(int id, CandidateProfile profile)
+    public async Task<IActionResult> UpdateProfile(int id, SaveCandidateProfileRequestDto request)
     {
-        if (id != profile.Id) return BadRequest();
+        if (id != request.Id) return BadRequest();
 
-        _context.Entry(profile).State = EntityState.Modified;
+        var profile = _mapper.ToEntity(request);
 
         try
         {
-            await _context.SaveChangesAsync();
+            await _repository.UpdateProfileAsync(profile);
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!ProfileExists(id)) return NotFound();
+            if (!await _repository.ProfileExistsAsync(id)) return NotFound();
             throw;
         }
 
@@ -58,22 +59,13 @@ public class CandidateProfilesController : ControllerBase
     }
 
     [HttpPost("{id}/videos")]
-    public async Task<ActionResult<Video>> AddVideo(int id, Video video)
+    public async Task<ActionResult<VideoResponseDto>> AddVideo(int id, SaveVideoRequestDto request)
     {
-        var profile = await _context.CandidateProfiles.FindAsync(id);
-        if (profile == null) return NotFound("Candidate profile not found.");
+        if (!await _repository.ProfileExistsAsync(id)) return NotFound("Candidate profile not found.");
 
-        video.CandidateProfileId = id;
-        video.UploadedAt = DateTime.UtcNow;
+        var video = _mapper.ToEntity(request);
+        var addedVideo = await _repository.AddVideoAsync(id, video);
 
-        _context.Videos.Add(video);
-        await _context.SaveChangesAsync();
-
-        return Ok(video);
-    }
-
-    private bool ProfileExists(int id)
-    {
-        return _context.CandidateProfiles.Any(e => e.Id == id);
+        return Ok(_mapper.ToDto(addedVideo));
     }
 }

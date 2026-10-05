@@ -2,18 +2,9 @@ using Coffeehouse.ViewModels;
 
 namespace Coffeehouse.Views;
 
-[QueryProperty(nameof(ElectionId), "id")]
-public partial class BallotPage : ContentPage
+public partial class BallotPage : ContentPage, IQueryAttributable
 {
     private readonly BallotViewModel _viewModel;
-
-    public int ElectionId 
-    { 
-        set 
-        { 
-            _viewModel.ElectionId = value; 
-        } 
-    }
 
     public BallotPage(BallotViewModel viewModel)
     {
@@ -22,9 +13,12 @@ public partial class BallotPage : ContentPage
         BindingContext = _viewModel;
     }
 
-    protected override void OnAppearing()
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
-        base.OnAppearing();
-        _viewModel.LoadBallotCommand.Execute(null);
+        if (query.TryGetValue("id", out var idObj) && int.TryParse(idObj?.ToString(), out var id))
+        {
+            _viewModel.ElectionId = id;
+            _viewModel.LoadBallotCommand.Execute(null);
+        }
     }
 }
