@@ -3,6 +3,9 @@ using Coffeehouse.Api.Models;
 
 namespace Coffeehouse.Api.Services;
 
+/// <summary>
+/// Service for interacting with the Google Civic Information API to look up Open Civic Data identifiers for addresses.
+/// </summary>
 public class GoogleCivicService
 {
     private readonly HttpClient _httpClient;

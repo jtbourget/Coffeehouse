@@ -2,6 +2,9 @@ using System.Text.Json;
 
 namespace Coffeehouse.Api.Services;
 
+/// <summary>
+/// Service for interacting with the Google Places API for address autocomplete and place details lookup.
+/// </summary>
 public class GooglePlacesService
 {
     private readonly HttpClient _httpClient;

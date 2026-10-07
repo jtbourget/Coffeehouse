@@ -1,5 +1,8 @@
 namespace Coffeehouse.Api.Models.DTOs;
 
+/// <summary>
+/// Data transfer object representing an election contest and its candidates.
+/// </summary>
 public class ContestResponseDto
 {
     public int Id { get; set; }

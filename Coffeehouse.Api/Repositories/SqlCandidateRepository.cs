@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Repositories;
 
+/// <summary>
+/// SQL-based implementation of the candidate repository using Entity Framework Core.
+/// </summary>
 public class SqlCandidateRepository : ICandidateRepository
 {
     private readonly AppDbContext _context;

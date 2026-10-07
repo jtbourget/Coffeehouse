@@ -2,6 +2,9 @@ using System;
 
 namespace Coffeehouse.Api.Models;
 
+/// <summary>
+/// Represents a video entity associated with a candidate profile.
+/// </summary>
 public class Video
 {
     public int Id { get; set; }

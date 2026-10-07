@@ -3,6 +3,9 @@ using System.Text.Json.Serialization;
 
 namespace Coffeehouse.Api.Services;
 
+/// <summary>
+/// Service for interacting with the Geocodio API to retrieve geographic and legislative district data.
+/// </summary>
 public class GeocodioService
 {
     private readonly HttpClient _httpClient;
@@ -88,18 +91,27 @@ public class GeocodioService
 }
 
 // Response Models
+/// <summary>
+/// Represents the root response returned by the Geocodio geocoding API.
+/// </summary>
 public class GeocodioResponse
 {
     [JsonPropertyName("results")]
     public List<GeocodioResult>? Results { get; set; }
 }
 
+/// <summary>
+/// Represents an individual geocoding result item from the Geocodio API response.
+/// </summary>
 public class GeocodioResult
 {
     [JsonPropertyName("fields")]
     public GeocodioFields? Fields { get; set; }
 }
 
+/// <summary>
+/// Represents the additional fields data within a Geocodio result, including legislative districts.
+/// </summary>
 public class GeocodioFields
 {
     [JsonPropertyName("congressional_districts")]
@@ -109,6 +121,9 @@ public class GeocodioFields
     public GeocodioStateLeg? StateLegislativeDistricts { get; set; }
 }
 
+/// <summary>
+/// Represents the state legislative districts returned by the Geocodio API.
+/// </summary>
 public class GeocodioStateLeg
 {
     [JsonPropertyName("house")]
@@ -118,6 +133,9 @@ public class GeocodioStateLeg
     public List<GeocodioDistrict>? Senate { get; set; }
 }
 
+/// <summary>
+/// Represents a legislative district in the Geocodio API response.
+/// </summary>
 public class GeocodioDistrict
 {
     [JsonPropertyName("district_number")]

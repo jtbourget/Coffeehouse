@@ -4,6 +4,9 @@ using Coffeehouse.Api.Models.DTOs;
 
 namespace Coffeehouse.Api.Services;
 
+/// <summary>
+/// Provides mapping functionality between candidate profile and video entities and their corresponding data transfer objects.
+/// </summary>
 public class CandidateProfileMapper : ICandidateProfileMapper
 {
     public CandidateProfile ToEntity(SaveCandidateProfileRequestDto dto)

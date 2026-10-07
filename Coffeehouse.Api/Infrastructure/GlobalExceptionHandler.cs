@@ -3,6 +3,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Coffeehouse.Api.Infrastructure;
 
+/// <summary>
+/// Global exception handler for converting unhandled exceptions into RFC 7807 Problem Details responses.
+/// </summary>
 public class GlobalExceptionHandler(
     ILogger<GlobalExceptionHandler> logger,
     IProblemDetailsService problemDetailsService,

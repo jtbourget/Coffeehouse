@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Repositories;
 
+/// <summary>
+/// SQL-based implementation of the favorite candidate repository using Entity Framework Core.
+/// </summary>
 public class SqlFavoriteCandidateRepository : IFavoriteCandidateRepository
 {
     private readonly AppDbContext _context;

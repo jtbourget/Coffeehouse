@@ -5,6 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Controllers;
 
+/// <summary>
+/// Controller for managing civic data, elections, contests, and candidates.
+/// </summary>
 [ApiController]
 [Route("api/civic")]
 public class CivicController : ControllerBase

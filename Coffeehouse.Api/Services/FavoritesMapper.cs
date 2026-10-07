@@ -5,6 +5,9 @@ using System.Linq;
 
 namespace Coffeehouse.Api.Services;
 
+/// <summary>
+/// Provides mapping functionality between favorite candidate entities and candidate response data transfer objects.
+/// </summary>
 public class FavoritesMapper : IFavoritesMapper
 {
     public FavoriteCandidateResponseDto ToDto(FavoriteCandidate favorite)

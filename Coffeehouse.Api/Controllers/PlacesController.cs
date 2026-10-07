@@ -4,6 +4,9 @@ using Coffeehouse.Api.Services;
 
 namespace Coffeehouse.Api.Controllers;
 
+/// <summary>
+/// Controller for managing address autocomplete suggestions and place details.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class PlacesController : ControllerBase

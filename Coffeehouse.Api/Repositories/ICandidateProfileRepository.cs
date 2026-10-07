@@ -3,6 +3,9 @@ using Coffeehouse.Api.Models;
 
 namespace Coffeehouse.Api.Repositories;
 
+/// <summary>
+/// Defines repository operations for retrieving, creating, and updating candidate profiles and their associated videos.
+/// </summary>
 public interface ICandidateProfileRepository
 {
     Task<CandidateProfile?> GetProfileAsync(int id);

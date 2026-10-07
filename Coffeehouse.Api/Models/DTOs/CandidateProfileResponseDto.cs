@@ -1,5 +1,8 @@
 namespace Coffeehouse.Api.Models.DTOs;
 
+/// <summary>
+/// Data transfer object representing a candidate profile and associated media.
+/// </summary>
 public class CandidateProfileResponseDto
 {
     public int Id { get; set; }

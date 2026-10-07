@@ -3,6 +3,9 @@ using System.Collections.Generic;
 
 namespace Coffeehouse.Api.Models.DTOs;
 
+/// <summary>
+/// Data transfer object representing an election, voting locations, and contests.
+/// </summary>
 public class ElectionResponseDto
 {
     public int Id { get; set; }

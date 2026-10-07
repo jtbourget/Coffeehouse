@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Repositories;
 
+/// <summary>
+/// SQL-based implementation of the address repository using Entity Framework Core.
+/// </summary>
 public class SqlAddressRepository : IAddressRepository
 {
     private readonly AppDbContext _context;

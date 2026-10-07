@@ -2,6 +2,9 @@ using Coffeehouse.Models;
 
 namespace Coffeehouse.Services;
 
+/// <summary>
+/// Defines the API client contract for retrieving and managing civic data, candidate information, and address suggestions.
+/// </summary>
 public interface IApiService
 {
     Task<UserAddress?> GetAddressAsync();

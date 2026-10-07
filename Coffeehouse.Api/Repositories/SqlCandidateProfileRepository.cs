@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Repositories;
 
+/// <summary>
+/// SQL-based implementation of the candidate profile repository using Entity Framework Core.
+/// </summary>
 public class SqlCandidateProfileRepository : ICandidateProfileRepository
 {
     private readonly AppDbContext _context;

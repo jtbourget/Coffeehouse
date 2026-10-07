@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Repositories;
 
+/// <summary>
+/// SQL-based implementation of the contest repository using Entity Framework Core.
+/// </summary>
 public class SqlContestRepository : IContestRepository
 {
     private readonly AppDbContext _context;

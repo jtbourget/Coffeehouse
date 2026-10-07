@@ -4,6 +4,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Repositories;
 
+/// <summary>
+/// SQL-based implementation of the election repository using Entity Framework Core.
+/// </summary>
 public class SqlElectionRepository : IElectionRepository
 {
     private readonly AppDbContext _context;

@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace Coffeehouse.Api.Repositories;
 
+/// <summary>
+/// SQL-based implementation of the favorites repository using Entity Framework Core.
+/// </summary>
 public class SqlFavoritesRepository : IFavoritesRepository
 {
     private readonly AppDbContext _context;

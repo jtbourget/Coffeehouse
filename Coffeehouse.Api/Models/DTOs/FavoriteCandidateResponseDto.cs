@@ -1,5 +1,8 @@
 namespace Coffeehouse.Api.Models.DTOs;
 
+/// <summary>
+/// Data transfer object representing a favorited candidate for a contest.
+/// </summary>
 public class FavoriteCandidateResponseDto
 {
     public int Id { get; set; }

@@ -2,6 +2,9 @@ using System;
 
 namespace Coffeehouse.Models;
 
+/// <summary>
+/// Represents a user-uploaded video associated with a candidate.
+/// </summary>
 public class Video
 {
     public int Id { get; set; }

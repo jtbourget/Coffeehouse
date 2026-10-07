@@ -6,6 +6,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Controllers;
 
+/// <summary>
+/// Controller for managing candidate profiles and associated media.
+/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 public class CandidateProfilesController : ControllerBase
