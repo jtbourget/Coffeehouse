@@ -1,5 +1,4 @@
-using Coffeehouse.Api.Models.DTOs;
-using Coffeehouse.Api.Repositories;
+using Coffeehouse.Api.DTOs;
 using Coffeehouse.Api.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -7,54 +6,50 @@ namespace Coffeehouse.Api.Controllers
 {
     /// <summary>
     /// Controller for managing the user's address.
+    /// Depends on the IAddressService interface. Never returns domain models directly.
     /// </summary>
     [ApiController]
     [Route("api/[controller]")]
     public class AddressController : ControllerBase
     {
-        private readonly IAddressRepository _repository;
-        private readonly IAddressMapper _mapper;
+        private readonly IAddressService _service;
 
         /// <summary>
         /// Initializes a new instance of the AddressController.
         /// </summary>
-        /// <param name="repository">The address repository.</param>
-        /// <param name="mapper">The address mapper.</param>
-        public AddressController(IAddressRepository repository, IAddressMapper mapper)
+        /// <param name="service">The address service.</param>
+        public AddressController(IAddressService service)
         {
-            _repository = repository;
-            _mapper = mapper;
+            _service = service;
         }
 
         /// <summary>
         /// Retrieves the most recent saved address.
         /// </summary>
-        /// <returns>The address if found; otherwise, 404 Not Found.</returns>
+        /// <returns>The address DTO if found; otherwise, 404 Not Found.</returns>
         [HttpGet]
         public async Task<ActionResult<AddressResponseDto>> GetAddress()
         {
-            var address = await _repository.GetAddressAsync();
+            var address = await _service.GetAddressAsync();
 
             if (address == null)
             {
                 return NotFound();
             }
 
-            return Ok(_mapper.ToAddressDto(address));
+            return Ok(address);
         }
 
         /// <summary>
         /// Saves a new address or updates the existing one.
         /// </summary>
-        /// <param name="request">The address to save.</param>
-        /// <returns>The saved address.</returns>
+        /// <param name="request">The address request DTO to save.</param>
+        /// <returns>The saved address response DTO.</returns>
         [HttpPost]
         public async Task<ActionResult<AddressResponseDto>> SaveAddress(SaveAddressRequestDto request)
         {
-            var entity = _mapper.ToEntity(request);
-            var savedAddress = await _repository.SaveAddressAsync(entity);
-            
-            return Ok(_mapper.ToAddressDto(savedAddress));
+            var savedAddress = await _service.SaveAddressAsync(request);
+            return Ok(savedAddress);
         }
     }
 }

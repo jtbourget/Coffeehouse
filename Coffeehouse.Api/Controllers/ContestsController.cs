@@ -1,47 +1,44 @@
-using Coffeehouse.Api.Data;
-using Coffeehouse.Api.Models;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Coffeehouse.Api.DTOs;
+using Coffeehouse.Api.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 
 namespace Coffeehouse.Api.Controllers
 {
     /// <summary>
     /// Controller for managing contests.
+    /// Depends on the IContestService interface. Never returns the Model.
     /// </summary>
     [ApiController]
     public class ContestsController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IContestService _service;
 
         /// <summary>
         /// Initializes a new instance of the ContestsController.
         /// </summary>
-        /// <param name="context">The database context.</param>
-        public ContestsController(AppDbContext context)
+        /// <param name="service">The contest service.</param>
+        public ContestsController(IContestService service)
         {
-            _context = context;
+            _service = service;
         }
 
         /// <summary>
         /// Retrieves contests for a specific election, including their candidates.
         /// </summary>
         /// <param name="electionId">The election ID.</param>
-        /// <returns>A list of contests.</returns>
+        /// <returns>A list of contest response DTOs.</returns>
         [HttpGet("api/elections/{electionId}/contests")]
-        public async Task<ActionResult<IEnumerable<Contest>>> GetContestsForElection(int electionId)
+        public async Task<ActionResult<IEnumerable<ContestResponseDto>>> GetContestsForElection(int electionId)
         {
-            // Verify the election exists before attempting to fetch contests
-            var electionExists = await _context.Elections.AnyAsync(e => e.Id == electionId);
-            if (!electionExists)
+            var contests = await _service.GetContestsForElectionAsync(electionId);
+            if (contests == null)
             {
                 return NotFound();
             }
 
-            // Retrieve all contests for the specified election, eager loading the candidates for each contest
-            return await _context.Contests
-                .Where(c => c.ElectionId == electionId)
-                .Include(c => c.Candidates)
-                .ToListAsync();
+            return Ok(contests);
         }
     }
 }

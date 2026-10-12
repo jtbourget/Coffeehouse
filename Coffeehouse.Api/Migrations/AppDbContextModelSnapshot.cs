@@ -61,7 +61,7 @@ namespace Coffeehouse.Api.Migrations
 
                     b.HasIndex("ContestId");
 
-                    b.ToTable("Candidates");
+                    b.ToTable("Candidates", (string)null);
                 });
 
             modelBuilder.Entity("Coffeehouse.Api.Models.CandidateProfile", b =>
@@ -74,6 +74,12 @@ namespace Coffeehouse.Api.Migrations
 
                     b.Property<string>("Bio")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsVerified")
+                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -88,7 +94,7 @@ namespace Coffeehouse.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CandidateProfiles");
+                    b.ToTable("CandidateProfiles", (string)null);
                 });
 
             modelBuilder.Entity("Coffeehouse.Api.Models.Contest", b =>
@@ -116,7 +122,7 @@ namespace Coffeehouse.Api.Migrations
 
                     b.HasIndex("ElectionId");
 
-                    b.ToTable("Contests");
+                    b.ToTable("Contests", (string)null);
                 });
 
             modelBuilder.Entity("Coffeehouse.Api.Models.Election", b =>
@@ -147,7 +153,7 @@ namespace Coffeehouse.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Elections");
+                    b.ToTable("Elections", (string)null);
                 });
 
             modelBuilder.Entity("Coffeehouse.Api.Models.FavoriteCandidate", b =>
@@ -171,7 +177,7 @@ namespace Coffeehouse.Api.Migrations
                     b.HasIndex("ContestId")
                         .IsUnique();
 
-                    b.ToTable("FavoriteCandidates");
+                    b.ToTable("FavoriteCandidates", (string)null);
                 });
 
             modelBuilder.Entity("Coffeehouse.Api.Models.Referendum", b =>
@@ -204,7 +210,7 @@ namespace Coffeehouse.Api.Migrations
 
                     b.HasIndex("ElectionId");
 
-                    b.ToTable("Referendums");
+                    b.ToTable("Referendums", (string)null);
                 });
 
             modelBuilder.Entity("Coffeehouse.Api.Models.UserAddress", b =>
@@ -237,7 +243,7 @@ namespace Coffeehouse.Api.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserAddresses");
+                    b.ToTable("UserAddresses", (string)null);
                 });
 
             modelBuilder.Entity("Coffeehouse.Api.Models.Video", b =>
@@ -271,7 +277,7 @@ namespace Coffeehouse.Api.Migrations
 
                     b.HasIndex("CandidateProfileId");
 
-                    b.ToTable("Videos");
+                    b.ToTable("Videos", (string)null);
                 });
 
             modelBuilder.Entity("Coffeehouse.Api.Models.Candidate", b =>

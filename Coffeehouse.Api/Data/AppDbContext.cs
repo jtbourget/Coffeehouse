@@ -56,6 +56,7 @@ namespace Coffeehouse.Api.Data
         /// </summary>
         public DbSet<Referendum> Referendums { get; set; } = null!;
 
+
         /// <summary>
         /// Configures the schema needed for the context.
         /// </summary>

@@ -60,8 +60,8 @@ public class CivicController : ControllerBase
                     var profile = profilesList.FirstOrDefault(p => p.Name.Equals(cand.Name, StringComparison.OrdinalIgnoreCase));
                     if(profile != null)
                     {
-                        if(string.IsNullOrEmpty(cand.Bio)) cand.Bio = profile.Bio;
-                        if(string.IsNullOrEmpty(cand.CampaignWebsite)) cand.CampaignWebsite = profile.WebsiteUrl;
+                        if(string.IsNullOrEmpty(cand.Bio) && profile.Bio != null) cand.Bio = profile.Bio;
+                        if(string.IsNullOrEmpty(cand.CampaignWebsite) && profile.WebsiteUrl != null) cand.CampaignWebsite = profile.WebsiteUrl;
                         if(!cand.Videos.Any() && profile.Videos != null) cand.Videos = profile.Videos;
                     }
                 }
