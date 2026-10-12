@@ -1,28 +1,36 @@
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Coffeehouse.Api.Data;
 using Coffeehouse.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Coffeehouse.Api.Repositories;
 
 /// <summary>
 /// SQL-based implementation of the favorite candidate repository using Entity Framework Core.
+/// Injected as a Singleton: uses IServiceScopeFactory for safe scope resolution.
 /// </summary>
 public class SqlFavoriteCandidateRepository : IFavoriteCandidateRepository
 {
-    private readonly AppDbContext _context;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public SqlFavoriteCandidateRepository(AppDbContext context)
+    public SqlFavoriteCandidateRepository(IServiceScopeFactory scopeFactory)
     {
-        _context = context;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task<IEnumerable<FavoriteCandidate>> GetAllAsync()
     {
-        return await _context.Set<FavoriteCandidate>().ToListAsync();
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        return await context.Set<FavoriteCandidate>().ToListAsync();
     }
 
     public async Task<FavoriteCandidate?> GetByIdAsync(int id)
     {
-        return await _context.Set<FavoriteCandidate>().FindAsync(id);
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        return await context.Set<FavoriteCandidate>().FindAsync(id);
     }
 }

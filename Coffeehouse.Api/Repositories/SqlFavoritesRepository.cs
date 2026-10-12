@@ -1,27 +1,31 @@
-using Coffeehouse.Api.Data;
-using Coffeehouse.Api.Models;
-using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Coffeehouse.Api.Data;
+using Coffeehouse.Api.Models;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Coffeehouse.Api.Repositories;
 
 /// <summary>
 /// SQL-based implementation of the favorites repository using Entity Framework Core.
+/// Injected as a Singleton: uses IServiceScopeFactory for safe scope resolution.
 /// </summary>
 public class SqlFavoritesRepository : IFavoritesRepository
 {
-    private readonly AppDbContext _context;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public SqlFavoritesRepository(AppDbContext context)
+    public SqlFavoritesRepository(IServiceScopeFactory scopeFactory)
     {
-        _context = context;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task<IEnumerable<FavoriteCandidate>> GetFavoritesForElectionAsync(int electionId)
     {
-        return await _context.FavoriteCandidates
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        return await context.FavoriteCandidates
             .Include(f => f.Contest)
             .Include(f => f.Candidate)
             .Where(f => f.Contest != null && f.Contest.ElectionId == electionId)
@@ -30,7 +34,9 @@ public class SqlFavoritesRepository : IFavoritesRepository
 
     public async Task SetFavoriteAsync(int contestId, int candidateId)
     {
-        var favorite = await _context.FavoriteCandidates
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var favorite = await context.FavoriteCandidates
             .FirstOrDefaultAsync(f => f.ContestId == contestId);
 
         if (favorite == null)
@@ -40,25 +46,27 @@ public class SqlFavoritesRepository : IFavoritesRepository
                 ContestId = contestId,
                 CandidateId = candidateId
             };
-            _context.FavoriteCandidates.Add(favorite);
+            context.FavoriteCandidates.Add(favorite);
         }
         else
         {
             favorite.CandidateId = candidateId;
         }
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     public async Task RemoveFavoriteAsync(int contestId)
     {
-        var favorite = await _context.FavoriteCandidates
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var favorite = await context.FavoriteCandidates
             .FirstOrDefaultAsync(f => f.ContestId == contestId);
 
         if (favorite != null)
         {
-            _context.FavoriteCandidates.Remove(favorite);
-            await _context.SaveChangesAsync();
+            context.FavoriteCandidates.Remove(favorite);
+            await context.SaveChangesAsync();
         }
     }
 }

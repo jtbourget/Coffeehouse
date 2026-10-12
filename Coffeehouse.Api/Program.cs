@@ -1,4 +1,7 @@
 using Coffeehouse.Api.Data;
+using Coffeehouse.Api.Repositories;
+using Coffeehouse.Api.Services;
+using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
 
 // Initialize the web application builder with the provided command-line arguments.
@@ -6,35 +9,55 @@ var builder = WebApplication.CreateBuilder(args);
 
 // --- Service Registration ---
 
-// Register controllers for handling API requests and routing.
-builder.Services.AddControllers();
+// Register controllers with SystemTextJsonValidationMetadataProvider so validation error keys match JSON property names.
+builder.Services.AddControllers(options =>
+{
+    options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider());
+});
 
-// Register OpenAPI/Swagger services to generate API documentation automatically in development environments.
+// Register OpenAPI services to generate API documentation automatically.
 builder.Services.AddOpenApi();
 
 // Register the Entity Framework Core database context.
-// This configures the application to use SQL Server LocalDB with the connection string defined in the application configuration.
+// Configures SQL Server LocalDB with connection string from configuration.
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(
-        builder.Configuration.GetConnectionString("DefaultConnection")));
+        builder.Configuration.GetConnectionString("DefaultConnection"))
+        .ConfigureWarnings(w => w.Ignore(Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.PendingModelChangesWarning)));
 
+// ProblemDetails service registration for RFC 7807 responses
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<Coffeehouse.Api.Infrastructure.GlobalExceptionHandler>();
 
-// Register Repositories and Services
-builder.Services.AddScoped<Coffeehouse.Api.Repositories.IAddressRepository, Coffeehouse.Api.Repositories.SqlAddressRepository>();
-builder.Services.AddScoped<Coffeehouse.Api.Services.IAddressMapper, Coffeehouse.Api.Services.AddressMapper>();
-builder.Services.AddScoped<Coffeehouse.Api.Repositories.IElectionRepository, Coffeehouse.Api.Repositories.SqlElectionRepository>();
-builder.Services.AddScoped<Coffeehouse.Api.Services.IElectionMapper, Coffeehouse.Api.Services.ElectionMapper>();
-builder.Services.AddScoped<Coffeehouse.Api.Repositories.IContestRepository, Coffeehouse.Api.Repositories.SqlContestRepository>();
-builder.Services.AddScoped<Coffeehouse.Api.Services.IContestMapper, Coffeehouse.Api.Services.ContestMapper>();
-builder.Services.AddScoped<Coffeehouse.Api.Repositories.ICandidateRepository, Coffeehouse.Api.Repositories.SqlCandidateRepository>();
-builder.Services.AddScoped<Coffeehouse.Api.Services.ICandidateMapper, Coffeehouse.Api.Services.CandidateMapper>();
-builder.Services.AddScoped<Coffeehouse.Api.Repositories.ICandidateProfileRepository, Coffeehouse.Api.Repositories.SqlCandidateProfileRepository>();
-builder.Services.AddScoped<Coffeehouse.Api.Services.ICandidateProfileMapper, Coffeehouse.Api.Services.CandidateProfileMapper>();
-builder.Services.AddScoped<Coffeehouse.Api.Repositories.IFavoriteCandidateRepository, Coffeehouse.Api.Repositories.SqlFavoriteCandidateRepository>();
-builder.Services.AddScoped<Coffeehouse.Api.Services.IFavoriteCandidateMapper, Coffeehouse.Api.Services.FavoriteCandidateMapper>();
+// --- Dependency Injection Registrations ---
 
+// Repositories registered as Singleton
+builder.Services.AddSingleton<IAddressRepository, SqlAddressRepository>();
+builder.Services.AddSingleton<IElectionRepository, SqlElectionRepository>();
+builder.Services.AddSingleton<IContestRepository, SqlContestRepository>();
+builder.Services.AddSingleton<ICandidateRepository, SqlCandidateRepository>();
+builder.Services.AddSingleton<ICandidateProfileRepository, SqlCandidateProfileRepository>();
+builder.Services.AddSingleton<IFavoriteCandidateRepository, SqlFavoriteCandidateRepository>();
+builder.Services.AddSingleton<IFavoritesRepository, SqlFavoritesRepository>();
+
+// Services registered as Scoped
+builder.Services.AddScoped<IAddressService, AddressService>();
+builder.Services.AddScoped<IElectionService, ElectionService>();
+builder.Services.AddScoped<IContestService, ContestService>();
+builder.Services.AddScoped<ICandidateService, CandidateService>();
+builder.Services.AddScoped<ICandidateProfileService, CandidateProfileService>();
+builder.Services.AddScoped<IFavoritesService, FavoritesService>();
+
+// Mappers registered as Scoped
+builder.Services.AddScoped<IAddressMapper, AddressMapper>();
+builder.Services.AddScoped<IElectionMapper, ElectionMapper>();
+builder.Services.AddScoped<IContestMapper, ContestMapper>();
+builder.Services.AddScoped<ICandidateMapper, CandidateMapper>();
+builder.Services.AddScoped<ICandidateProfileMapper, CandidateProfileMapper>();
+builder.Services.AddScoped<IFavoriteCandidateMapper, FavoriteCandidateMapper>();
+builder.Services.AddScoped<IFavoritesMapper, FavoritesMapper>();
+
+// HTTP client services
 builder.Services.AddHttpClient<Coffeehouse.Api.Services.GooglePlacesService>();
 builder.Services.AddHttpClient<Coffeehouse.Api.Services.GeocodioService>();
 
@@ -42,20 +65,15 @@ builder.Services.AddHttpClient<Coffeehouse.Api.Services.GeocodioService>();
 var app = builder.Build();
 
 // --- Database Initialization ---
-// Create a new dependency injection scope to resolve scoped services.
-// This is necessary because DbContext is registered as a scoped service by default.
 using (var scope = app.Services.CreateScope())
 {
-    // Retrieve the database context instance from the service provider.
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    
-    // Call the database initialization logic to ensure the database is created and seeded with sample data.
     SeedData.Initialize(context);
 }
 
 // --- HTTP Pipeline Configuration ---
 
-// Enable OpenAPI endpoints only in the development environment to prevent exposing API details in production.
+// Enable OpenAPI endpoints (available in development and testing).
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -64,7 +82,7 @@ if (app.Environment.IsDevelopment())
 // Add middleware for authorization.
 app.UseAuthorization();
 
-// Add global exception handler
+// Add global exception handler middleware for unhandled exceptions
 app.UseExceptionHandler();
 
 // Map controller endpoints to the request pipeline.
@@ -72,4 +90,3 @@ app.MapControllers();
 
 // Start the application and begin listening for incoming HTTP requests.
 app.Run();
-

@@ -8,5 +8,7 @@ namespace Coffeehouse.Api.Repositories;
 public interface ICandidateRepository
 {
     Task<IEnumerable<Candidate>> GetAllAsync();
+    Task<IEnumerable<Candidate>> GetCandidatesByContestIdAsync(int contestId);
     Task<Candidate?> GetByIdAsync(int id);
+    Task<bool> ContestExistsAsync(int contestId);
 }

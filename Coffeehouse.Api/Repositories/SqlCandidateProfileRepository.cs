@@ -1,54 +1,123 @@
+namespace Coffeehouse.Api.Repositories;
+
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coffeehouse.Api.Data;
 using Coffeehouse.Api.Models;
 using Microsoft.EntityFrameworkCore;
-
-namespace Coffeehouse.Api.Repositories;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// SQL-based implementation of the candidate profile repository using Entity Framework Core.
+/// Injected as a Singleton: uses IServiceScopeFactory to safely obtain scoped DbContext instances.
 /// </summary>
 public class SqlCandidateProfileRepository : ICandidateProfileRepository
 {
-    private readonly AppDbContext _context;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public SqlCandidateProfileRepository(AppDbContext context)
+    public SqlCandidateProfileRepository(IServiceScopeFactory scopeFactory)
     {
-        _context = context;
+        _scopeFactory = scopeFactory;
+    }
+
+    public async Task<IEnumerable<CandidateProfile>> GetAllProfilesAsync(string? ocdId = null)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var query = context.CandidateProfiles
+            .Include(p => p.Videos)
+            .AsQueryable();
+
+        if (!string.IsNullOrWhiteSpace(ocdId))
+        {
+            var trimmedOcdId = ocdId.Trim().ToLower();
+            query = query.Where(p => p.OcdId.ToLower() == trimmedOcdId);
+        }
+
+        return await query.ToListAsync();
     }
 
     public async Task<CandidateProfile?> GetProfileAsync(int id)
     {
-        return await _context.CandidateProfiles
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        return await context.CandidateProfiles
             .Include(p => p.Videos)
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
+    public async Task<CandidateProfile?> GetByNameAndOcdIdAsync(string name, string ocdId)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        return await context.CandidateProfiles
+            .FirstOrDefaultAsync(p => p.Name.ToLower() == name.ToLower() && p.OcdId.ToLower() == ocdId.ToLower());
+    }
+
     public async Task<CandidateProfile> CreateProfileAsync(CandidateProfile profile)
     {
-        _context.CandidateProfiles.Add(profile);
-        await _context.SaveChangesAsync();
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        context.CandidateProfiles.Add(profile);
+        await context.SaveChangesAsync();
         return profile;
     }
 
-    public async Task UpdateProfileAsync(CandidateProfile profile)
+    public async Task<bool> UpdateProfileAsync(int id, CandidateProfile updated)
     {
-        _context.Entry(profile).State = EntityState.Modified;
-        await _context.SaveChangesAsync();
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var existing = await context.CandidateProfiles.FindAsync(id);
+        if (existing == null)
+        {
+            return false;
+        }
+
+        existing.Name = updated.Name;
+        existing.OcdId = updated.OcdId;
+        existing.Bio = updated.Bio;
+        existing.WebsiteUrl = updated.WebsiteUrl;
+        await context.SaveChangesAsync();
+        return true;
     }
 
-    public async Task<Video> AddVideoAsync(int candidateProfileId, Video video)
+    public async Task<bool> DeleteProfileAsync(int id)
     {
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var existing = await context.CandidateProfiles.FindAsync(id);
+        if (existing == null)
+        {
+            return false;
+        }
+
+        context.CandidateProfiles.Remove(existing);
+        await context.SaveChangesAsync();
+        return true;
+    }
+
+    public async Task<Video?> AddVideoAsync(int candidateProfileId, Video video)
+    {
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var profileExists = await context.CandidateProfiles.AnyAsync(p => p.Id == candidateProfileId);
+        if (!profileExists)
+        {
+            return null;
+        }
+
         video.CandidateProfileId = candidateProfileId;
         video.UploadedAt = DateTime.UtcNow;
-        _context.Videos.Add(video);
-        await _context.SaveChangesAsync();
+        context.Videos.Add(video);
+        await context.SaveChangesAsync();
         return video;
     }
 
     public async Task<bool> ProfileExistsAsync(int id)
     {
-        return await _context.CandidateProfiles.AnyAsync(e => e.Id == id);
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        return await context.CandidateProfiles.AnyAsync(e => e.Id == id);
     }
 }

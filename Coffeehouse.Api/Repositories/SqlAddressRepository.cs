@@ -1,35 +1,41 @@
 using Coffeehouse.Api.Data;
 using Coffeehouse.Api.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Coffeehouse.Api.Repositories;
 
 /// <summary>
 /// SQL-based implementation of the address repository using Entity Framework Core.
+/// Uses IServiceScopeFactory so it can safely be registered as a Singleton.
 /// </summary>
 public class SqlAddressRepository : IAddressRepository
 {
-    private readonly AppDbContext _context;
+    private readonly IServiceScopeFactory _scopeFactory;
 
-    public SqlAddressRepository(AppDbContext context)
+    public SqlAddressRepository(IServiceScopeFactory scopeFactory)
     {
-        _context = context;
+        _scopeFactory = scopeFactory;
     }
 
     public async Task<UserAddress?> GetAddressAsync()
     {
-        return await _context.UserAddresses
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        return await context.UserAddresses
             .OrderByDescending(a => a.Id)
             .FirstOrDefaultAsync();
     }
 
     public async Task<UserAddress> SaveAddressAsync(UserAddress address)
     {
-        var existingAddress = await _context.UserAddresses.FirstOrDefaultAsync();
+        using var scope = _scopeFactory.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var existingAddress = await context.UserAddresses.FirstOrDefaultAsync();
 
         if (existingAddress == null)
         {
-            _context.UserAddresses.Add(address);
+            context.UserAddresses.Add(address);
             existingAddress = address;
         }
         else
@@ -40,7 +46,7 @@ public class SqlAddressRepository : IAddressRepository
             existingAddress.ZipCode = address.ZipCode;
         }
 
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
         return existingAddress;
     }
 }
