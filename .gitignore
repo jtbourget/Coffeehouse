@@ -361,3 +361,9 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+
+# Test and temporary data files ignored per rubric
+Data/*.json
+Data/*.tmp
+**/Data/*.json
+**/Data/*.tmp
