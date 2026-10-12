@@ -1,0 +1,621 @@
+{
+    "info": {
+        "_postman_id": "b1840f13-68d2-43bb-8153-e57813df90f3",
+        "name": "Coffeehouse - Candidate Profiles API",
+        "description": "Comprehensive Postman test collection for the Coffeehouse Candidate Profiles API built from the OpenAPI specification.\nIncludes complete CRUD coverage, query-string filtering (?ocdId), negative/failure scenarios (400, 404, 409), Location header validation, over-posting protection verification, and automated cleanup.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "variable": [
+        {
+            "key": "baseUrl",
+            "value": "http://localhost:5032",
+            "type": "string"
+        },
+        {
+            "key": "id",
+            "value": "",
+            "type": "string"
+        }
+    ],
+    "item": [
+        {
+            "name": "1. GET All Profiles",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200 OK\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Response body is an array\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.be.an('array');",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles"
+                    ]
+                },
+                "description": "Retrieves all candidate profiles."
+            }
+        },
+        {
+            "name": "2. GET All Profiles with District Filter",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200 OK\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"All returned profiles match the requested ocdId filter\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData).to.be.an('array');",
+                            "    jsonData.forEach(function (profile) {",
+                            "        pm.expect(profile.ocdId.toLowerCase()).to.eql(\"ocd-division/country:us/state:wi\");",
+                            "    });",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles?ocdId=ocd-division/country:us/state:wi",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles"
+                    ],
+                    "query": [
+                        {
+                            "key": "ocdId",
+                            "value": "ocd-division/country:us/state:wi",
+                            "description": "Query string filter by district identifier"
+                        }
+                    ]
+                },
+                "description": "Retrieves candidate profiles filtered by ocdId district query string."
+            }
+        },
+        {
+            "name": "3. POST Create Candidate Profile (201 Created & Over-posting check)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 201 Created\", function () {",
+                            "    pm.response.to.have.status(201);",
+                            "});",
+                            "",
+                            "pm.test(\"Location header is present and valid\", function () {",
+                            "    pm.response.to.have.header(\"Location\");",
+                            "    var location = pm.response.headers.get(\"Location\");",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(location).to.include(\"/api/candidateprofiles/\" + jsonData.id);",
+                            "});",
+                            "",
+                            "pm.test(\"Over-posting is ignored (server-controlled fields cannot be overridden)\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    // Client submitted id: 99999, server must ignore and assign its own database primary key",
+                            "    pm.expect(jsonData.id).to.not.equal(99999);",
+                            "    // Client submitted createdAt: '1999-01-01', server must assign its own timestamp",
+                            "    pm.expect(jsonData.createdAt).to.not.include(\"1999-01-01\");",
+                            "    // Client submitted isVerified: true, server-controlled status must remain false",
+                            "    pm.expect(jsonData.isVerified).to.be.false;",
+                            "    // Arbitrary unauthorized property must not exist",
+                            "    pm.expect(jsonData).to.not.have.property(\"unauthorizedField\");",
+                            "});",
+                            "",
+                            "pm.test(\"Set id variable from POST response\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.id).to.be.a('number');",
+                            "    pm.collectionVariables.set(\"id\", jsonData.id);",
+                            "    if (pm.environment) {",
+                            "        pm.environment.set(\"id\", jsonData.id);",
+                            "    }",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Jane Doe Candidate\",\n    \"ocdId\": \"ocd-division/country:us/state:wi/cd:2\",\n    \"bio\": \"Civic leader dedicated to transparent community governance and election access.\",\n    \"websiteUrl\": \"https://janedoe4congress.org\",\n    \"id\": 99999,\n    \"createdAt\": \"1999-01-01T00:00:00Z\",\n    \"isVerified\": true,\n    \"unauthorizedField\": \"malicious_attempt\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles"
+                    ]
+                },
+                "description": "Creates a new candidate profile and sets the {{id}} variable from response while verifying over-posting protection."
+            }
+        },
+        {
+            "name": "4. POST Create Profile - Duplicate (409 Conflict)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 409 Conflict\", function () {",
+                            "    pm.response.to.have.status(409);",
+                            "});",
+                            "",
+                            "pm.test(\"Returns RFC 7807 ProblemDetails for duplicate rule\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.status).to.eql(409);",
+                            "    pm.expect(jsonData.title).to.eql(\"Duplicate Candidate Profile\");",
+                            "    pm.expect(jsonData.detail).to.include(\"already exists\");",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Jane Doe Candidate\",\n    \"ocdId\": \"ocd-division/country:us/state:wi/cd:2\",\n    \"bio\": \"Duplicate submission attempt with same candidate name and district.\",\n    \"websiteUrl\": \"https://janedoe4congress.org\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles"
+                    ]
+                },
+                "description": "Tests business rule duplicate check outcome mapped to 409 Conflict."
+            }
+        },
+        {
+            "name": "5. POST Create Profile - Validation Failure (400 Bad Request)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 400 Bad Request\", function () {",
+                            "    pm.response.to.have.status(400);",
+                            "});",
+                            "",
+                            "pm.test(\"Validation error dictionary uses camelCase JSON keys\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.errors).to.be.an('object');",
+                            "    pm.expect(jsonData.errors).to.have.property(\"name\");",
+                            "    pm.expect(jsonData.errors).to.have.property(\"ocdId\");",
+                            "    pm.expect(jsonData.errors).to.have.property(\"websiteUrl\");",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"\",\n    \"ocdId\": \"bad\",\n    \"bio\": \"Bio content\",\n    \"websiteUrl\": \"not-a-valid-url\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles"
+                    ]
+                },
+                "description": "Tests DataAnnotations validation failure returning 400 with camelCase JSON property keys."
+            }
+        },
+        {
+            "name": "6. GET Profile by ID (200 OK)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 200 OK\", function () {",
+                            "    pm.response.to.have.status(200);",
+                            "});",
+                            "",
+                            "pm.test(\"Retrieved profile matches the created ID variable\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    var expectedId = pm.collectionVariables.get(\"id\");",
+                            "    pm.expect(jsonData.id).to.eql(Number(expectedId));",
+                            "    pm.expect(jsonData.name).to.eql(\"Jane Doe Candidate\");",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles/{{id}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles",
+                        "{{id}}"
+                    ]
+                },
+                "description": "Retrieves the candidate profile created earlier using {{id}} collection variable."
+            }
+        },
+        {
+            "name": "7. GET Profile by ID - Non-existent ID (404 Not Found)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 404 Not Found\", function () {",
+                            "    pm.response.to.have.status(404);",
+                            "});",
+                            "",
+                            "pm.test(\"Returns ProblemDetails for missing resource\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.status).to.eql(404);",
+                            "    pm.expect(jsonData.title).to.eql(\"Candidate Profile Not Found\");",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles/999999",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles",
+                        "999999"
+                    ]
+                },
+                "description": "Tests GET with a non-existent integer ID, confirming 404 Not Found."
+            }
+        },
+        {
+            "name": "8. PUT Update Profile (204 No Content)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 204 No Content\", function () {",
+                            "    pm.response.to.have.status(204);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Jane Doe Candidate\",\n    \"ocdId\": \"ocd-division/country:us/state:wi/cd:2\",\n    \"bio\": \"Updated civic leader biography with expanded campaign priorities.\",\n    \"websiteUrl\": \"https://janedoe4congress.org/platform\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles/{{id}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles",
+                        "{{id}}"
+                    ]
+                },
+                "description": "Updates the candidate profile using {{id}} collection variable."
+            }
+        },
+        {
+            "name": "9. PUT Update Profile - Non-existent ID (404 Not Found)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 404 Not Found\", function () {",
+                            "    pm.response.to.have.status(404);",
+                            "});",
+                            "",
+                            "pm.test(\"Returns ProblemDetails for missing resource\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.status).to.eql(404);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"Non-existent Profile\",\n    \"ocdId\": \"ocd-division/country:us/state:wi\",\n    \"bio\": \"Updating non-existent profile.\",\n    \"websiteUrl\": \"https://example.com\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles/999999",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles",
+                        "999999"
+                    ]
+                },
+                "description": "Tests PUT with a non-existent ID, expecting 404 Not Found."
+            }
+        },
+        {
+            "name": "10. PUT Update Profile - Validation Failure (400 Bad Request)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 400 Bad Request\", function () {",
+                            "    pm.response.to.have.status(400);",
+                            "});",
+                            "",
+                            "pm.test(\"Validation error dictionary contains name error\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.errors).to.have.property(\"name\");",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\n    \"name\": \"\",\n    \"ocdId\": \"bad\",\n    \"bio\": \"Invalid update body with empty name\",\n    \"websiteUrl\": \"not-a-valid-url\"\n}",
+                    "options": {
+                        "raw": {
+                            "language": "json"
+                        }
+                    }
+                },
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles/{{id}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles",
+                        "{{id}}"
+                    ]
+                },
+                "description": "Tests PUT with invalid payload, expecting 400 Bad Request."
+            }
+        },
+        {
+            "name": "11. DELETE Profile by ID (204 No Content) - Cleanup",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 204 No Content\", function () {",
+                            "    pm.response.to.have.status(204);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "DELETE",
+                "header": [],
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles/{{id}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles",
+                        "{{id}}"
+                    ]
+                },
+                "description": "Deletes the profile created during the collection run, ensuring automated cleanup."
+            }
+        },
+        {
+            "name": "12. DELETE Profile by ID - Already Deleted / Not Found (404 Not Found)",
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "exec": [
+                            "pm.test(\"Status code is 404 Not Found\", function () {",
+                            "    pm.response.to.have.status(404);",
+                            "});",
+                            "",
+                            "pm.test(\"Confirm resource was completely cleaned up\", function () {",
+                            "    var jsonData = pm.response.json();",
+                            "    pm.expect(jsonData.status).to.eql(404);",
+                            "});"
+                        ],
+                        "type": "text/javascript"
+                    }
+                }
+            ],
+            "request": {
+                "method": "DELETE",
+                "header": [
+                    {
+                        "key": "Accept",
+                        "value": "application/json"
+                    }
+                ],
+                "url": {
+                    "raw": "{{baseUrl}}/api/candidateprofiles/{{id}}",
+                    "host": [
+                        "{{baseUrl}}"
+                    ],
+                    "path": [
+                        "api",
+                        "candidateprofiles",
+                        "{{id}}"
+                    ]
+                },
+                "description": "Verifies that deleting an already-deleted resource returns 404 Not Found and confirms clean state."
+            }
+        }
+    ]
+}
