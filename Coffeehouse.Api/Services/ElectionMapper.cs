@@ -1,5 +1,6 @@
+using System.Linq;
+using Coffeehouse.Api.DTOs;
 using Coffeehouse.Api.Models;
-using Coffeehouse.Api.Models.DTOs;
 
 namespace Coffeehouse.Api.Services;
 
@@ -8,11 +9,23 @@ namespace Coffeehouse.Api.Services;
 /// </summary>
 public class ElectionMapper : IElectionMapper
 {
+    private readonly IContestMapper _contestMapper;
+
+    public ElectionMapper(IContestMapper contestMapper)
+    {
+        _contestMapper = contestMapper;
+    }
+
     public ElectionResponseDto ToDto(Election entity)
     {
         return new ElectionResponseDto
         {
             Id = entity.Id,
+            Name = entity.Name ?? string.Empty,
+            ElectionDate = entity.ElectionDate,
+            VotingLocationName = entity.VotingLocationName ?? string.Empty,
+            VotingLocationAddress = entity.VotingLocationAddress ?? string.Empty,
+            Contests = entity.Contests?.Select(_contestMapper.ToDto).ToList() ?? new()
         };
     }
 }

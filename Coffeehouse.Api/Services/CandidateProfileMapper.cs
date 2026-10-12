@@ -1,8 +1,9 @@
-using System.Linq;
-using Coffeehouse.Api.Models;
-using Coffeehouse.Api.Models.DTOs;
-
 namespace Coffeehouse.Api.Services;
+
+using System;
+using System.Linq;
+using Coffeehouse.Api.DTOs;
+using Coffeehouse.Api.Models;
 
 /// <summary>
 /// Provides mapping functionality between candidate profile and video entities and their corresponding data transfer objects.
@@ -13,7 +14,6 @@ public class CandidateProfileMapper : ICandidateProfileMapper
     {
         return new CandidateProfile
         {
-            Id = dto.Id,
             OcdId = dto.OcdId,
             Name = dto.Name,
             Bio = dto.Bio,
@@ -30,6 +30,8 @@ public class CandidateProfileMapper : ICandidateProfileMapper
             Name = entity.Name,
             Bio = entity.Bio,
             WebsiteUrl = entity.WebsiteUrl,
+            CreatedAt = entity.CreatedAt,
+            IsVerified = entity.IsVerified,
             Videos = entity.Videos?.Select(ToDto).ToList() ?? new()
         };
     }

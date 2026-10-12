@@ -1,9 +1,7 @@
-using System;
-
-namespace Coffeehouse.Api.Models.DTOs;
+namespace Coffeehouse.Api.DTOs;
 
 /// <summary>
-/// Data transfer object representing a candidate video response.
+/// Data transfer object representing a candidate profile video.
 /// </summary>
 public class VideoResponseDto
 {

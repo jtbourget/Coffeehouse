@@ -1,5 +1,5 @@
+using Coffeehouse.Api.DTOs;
 using Coffeehouse.Api.Models;
-using Coffeehouse.Api.Models.DTOs;
 
 namespace Coffeehouse.Api.Services;
 

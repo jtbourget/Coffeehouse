@@ -1,5 +1,5 @@
+using Coffeehouse.Api.DTOs;
 using Coffeehouse.Api.Models;
-using Coffeehouse.Api.Models.DTOs;
 
 namespace Coffeehouse.Api.Services;
 
@@ -13,6 +13,12 @@ public class CandidateMapper : ICandidateMapper
         return new CandidateResponseDto
         {
             Id = entity.Id,
+            ContestId = entity.ContestId,
+            Name = entity.Name ?? string.Empty,
+            Party = entity.Party ?? string.Empty,
+            PhotoUrl = entity.PhotoUrl ?? string.Empty,
+            CampaignWebsite = entity.CampaignWebsite ?? string.Empty,
+            Bio = entity.Bio ?? string.Empty
         };
     }
 }

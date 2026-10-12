@@ -1,7 +1,7 @@
-using Coffeehouse.Api.Models;
-using Coffeehouse.Api.Models.DTOs;
-
 namespace Coffeehouse.Api.Services;
+
+using Coffeehouse.Api.DTOs;
+using Coffeehouse.Api.Models;
 
 /// <summary>
 /// Defines mapping operations between candidate profile and video entities and their corresponding data transfer objects.

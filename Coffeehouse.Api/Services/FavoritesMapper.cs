@@ -1,5 +1,5 @@
+using Coffeehouse.Api.DTOs;
 using Coffeehouse.Api.Models;
-using Coffeehouse.Api.Models.DTOs;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -17,6 +17,7 @@ public class FavoritesMapper : IFavoritesMapper
             Id = favorite.Id,
             ContestId = favorite.ContestId,
             OfficeName = favorite.Contest?.OfficeName ?? string.Empty,
+            ContestOfficeName = favorite.Contest?.OfficeName ?? string.Empty,
             CandidateId = favorite.CandidateId,
             CandidateName = favorite.Candidate?.Name ?? string.Empty,
             Party = favorite.Candidate?.Party ?? string.Empty

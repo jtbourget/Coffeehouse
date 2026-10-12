@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
-
-namespace Coffeehouse.Api.Models.DTOs;
+namespace Coffeehouse.Api.DTOs;
 
 /// <summary>
 /// Data transfer object representing an election, voting locations, and contests.

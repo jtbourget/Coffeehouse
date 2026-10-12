@@ -1,11 +1,11 @@
-namespace Coffeehouse.Api.Models.DTOs;
+namespace Coffeehouse.Api.DTOs;
 
 /// <summary>
-/// Data transfer object representing a user's address.
+/// Data transfer object for saving or updating a user's address.
+/// Notice that Id is not present as clients cannot set the database-generated key.
 /// </summary>
-public class AddressResponseDto
+public class SaveAddressRequestDto
 {
-    public int Id { get; set; }
     public string Street { get; set; } = string.Empty;
     public string City { get; set; } = string.Empty;
     public string State { get; set; } = string.Empty;

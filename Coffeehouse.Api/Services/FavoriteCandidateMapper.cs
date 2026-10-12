@@ -1,5 +1,5 @@
+using Coffeehouse.Api.DTOs;
 using Coffeehouse.Api.Models;
-using Coffeehouse.Api.Models.DTOs;
 
 namespace Coffeehouse.Api.Services;
 
@@ -13,6 +13,8 @@ public class FavoriteCandidateMapper : IFavoriteCandidateMapper
         return new FavoriteCandidateResponseDto
         {
             Id = entity.Id,
+            ContestId = entity.ContestId,
+            CandidateId = entity.CandidateId
         };
     }
 }
