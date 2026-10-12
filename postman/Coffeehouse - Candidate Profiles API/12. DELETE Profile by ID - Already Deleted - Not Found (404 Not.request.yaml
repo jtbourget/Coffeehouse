@@ -1,0 +1,20 @@
+$kind: http-request
+name: 12. DELETE Profile by ID - Already Deleted / Not Found (404 Not Found)
+description: Verifies that deleting an already-deleted resource returns 404 Not Found and confirms clean state.
+url: "{{baseUrl}}/api/candidateprofiles/{{id}}"
+method: DELETE
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 404 Not Found", function () {
+          pm.response.to.have.status(404);
+      });
+
+      pm.test("Confirm resource was completely cleaned up", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.status).to.eql(404);
+      });
+    language: text/javascript
+order: 12000

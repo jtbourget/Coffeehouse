@@ -1,0 +1,32 @@
+$kind: http-request
+description: Tests DataAnnotations validation failure returning 400 with camelCase JSON property keys.
+url: "{{baseUrl}}/api/candidateprofiles"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+        "name": "",
+        "ocdId": "bad",
+        "bio": "Bio content",
+        "websiteUrl": "not-a-valid-url"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 400 Bad Request", function () {
+          pm.response.to.have.status(400);
+      });
+
+      pm.test("Validation error dictionary uses camelCase JSON keys", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.errors).to.be.an('object');
+          pm.expect(jsonData.errors).to.have.property("name");
+          pm.expect(jsonData.errors).to.have.property("ocdId");
+          pm.expect(jsonData.errors).to.have.property("websiteUrl");
+      });
+    language: text/javascript
+order: 5000

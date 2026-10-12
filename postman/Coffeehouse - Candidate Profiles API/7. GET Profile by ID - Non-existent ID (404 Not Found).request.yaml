@@ -1,0 +1,20 @@
+$kind: http-request
+description: Tests GET with a non-existent integer ID, confirming 404 Not Found.
+url: "{{baseUrl}}/api/candidateprofiles/999999"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 404 Not Found", function () {
+          pm.response.to.have.status(404);
+      });
+
+      pm.test("Returns ProblemDetails for missing resource", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.status).to.eql(404);
+          pm.expect(jsonData.title).to.eql("Candidate Profile Not Found");
+      });
+    language: text/javascript
+order: 7000

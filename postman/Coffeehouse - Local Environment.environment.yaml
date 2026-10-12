@@ -1,0 +1,6 @@
+name: Coffeehouse - Local Environment
+values:
+  - key: baseUrl
+    value: 'http://localhost:5032'
+  - key: id
+    value: ''

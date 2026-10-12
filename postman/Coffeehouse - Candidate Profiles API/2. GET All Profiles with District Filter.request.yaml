@@ -1,0 +1,26 @@
+$kind: http-request
+description: Retrieves candidate profiles filtered by ocdId district query string.
+url: "{{baseUrl}}/api/candidateprofiles?ocdId=ocd-division/country:us/state:wi"
+method: GET
+headers:
+  Accept: application/json
+queryParams:
+  - key: ocdId
+    value: ocd-division/country:us/state:wi
+    description: Query string filter by district identifier
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("All returned profiles match the requested ocdId filter", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData).to.be.an('array');
+          jsonData.forEach(function (profile) {
+              pm.expect(profile.ocdId.toLowerCase()).to.eql("ocd-division/country:us/state:wi");
+          });
+      });
+    language: text/javascript
+order: 2000

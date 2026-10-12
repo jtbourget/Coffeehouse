@@ -1,0 +1,21 @@
+$kind: http-request
+description: Retrieves the candidate profile created earlier using {{id}} collection variable.
+url: "{{baseUrl}}/api/candidateprofiles/{{id}}"
+method: GET
+headers:
+  Accept: application/json
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 200 OK", function () {
+          pm.response.to.have.status(200);
+      });
+
+      pm.test("Retrieved profile matches the created ID variable", function () {
+          var jsonData = pm.response.json();
+          var expectedId = pm.collectionVariables.get("id");
+          pm.expect(jsonData.id).to.eql(Number(expectedId));
+          pm.expect(jsonData.name).to.eql("Jane Doe Candidate");
+      });
+    language: text/javascript
+order: 6000

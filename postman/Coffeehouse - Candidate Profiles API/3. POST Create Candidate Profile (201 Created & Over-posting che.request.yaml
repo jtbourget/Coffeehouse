@@ -1,0 +1,57 @@
+$kind: http-request
+name: 3. POST Create Candidate Profile (201 Created & Over-posting check)
+description: Creates a new candidate profile and sets the {{id}} variable from response while verifying over-posting protection.
+url: "{{baseUrl}}/api/candidateprofiles"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+        "name": "Jane Doe Candidate",
+        "ocdId": "ocd-division/country:us/state:wi/cd:2",
+        "bio": "Civic leader dedicated to transparent community governance and election access.",
+        "websiteUrl": "https://janedoe4congress.org",
+        "id": 99999,
+        "createdAt": "1999-01-01T00:00:00Z",
+        "isVerified": true,
+        "unauthorizedField": "malicious_attempt"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 201 Created", function () {
+          pm.response.to.have.status(201);
+      });
+
+      pm.test("Location header is present and valid", function () {
+          pm.response.to.have.header("Location");
+          var location = pm.response.headers.get("Location");
+          var jsonData = pm.response.json();
+          pm.expect(location).to.include("/api/candidateprofiles/" + jsonData.id);
+      });
+
+      pm.test("Over-posting is ignored (server-controlled fields cannot be overridden)", function () {
+          var jsonData = pm.response.json();
+          // Client submitted id: 99999, server must ignore and assign its own database primary key
+          pm.expect(jsonData.id).to.not.equal(99999);
+          // Client submitted createdAt: '1999-01-01', server must assign its own timestamp
+          pm.expect(jsonData.createdAt).to.not.include("1999-01-01");
+          // Client submitted isVerified: true, server-controlled status must remain false
+          pm.expect(jsonData.isVerified).to.be.false;
+          // Arbitrary unauthorized property must not exist
+          pm.expect(jsonData).to.not.have.property("unauthorizedField");
+      });
+
+      pm.test("Set id variable from POST response", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.id).to.be.a('number');
+          pm.collectionVariables.set("id", jsonData.id);
+          if (pm.environment) {
+              pm.environment.set("id", jsonData.id);
+          }
+      });
+    language: text/javascript
+order: 3000

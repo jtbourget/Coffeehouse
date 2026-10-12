@@ -1,0 +1,29 @@
+$kind: http-request
+description: Tests PUT with invalid payload, expecting 400 Bad Request.
+url: "{{baseUrl}}/api/candidateprofiles/{{id}}"
+method: PUT
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+        "name": "",
+        "ocdId": "bad",
+        "bio": "Invalid update body with empty name",
+        "websiteUrl": "not-a-valid-url"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 400 Bad Request", function () {
+          pm.response.to.have.status(400);
+      });
+
+      pm.test("Validation error dictionary contains name error", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.errors).to.have.property("name");
+      });
+    language: text/javascript
+order: 10000

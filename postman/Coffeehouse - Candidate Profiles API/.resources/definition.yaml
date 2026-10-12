@@ -1,0 +1,7 @@
+$kind: collection
+description: |-
+  Comprehensive Postman test collection for the Coffeehouse Candidate Profiles API built from the OpenAPI specification.
+  Includes complete CRUD coverage, query-string filtering (?ocdId), negative/failure scenarios (400, 404, 409), Location header validation, over-posting protection verification, and automated cleanup.
+variables:
+  baseUrl: http://localhost:5032
+  id: ""

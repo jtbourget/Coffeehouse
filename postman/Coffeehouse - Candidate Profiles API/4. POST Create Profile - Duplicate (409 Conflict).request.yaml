@@ -1,0 +1,31 @@
+$kind: http-request
+description: Tests business rule duplicate check outcome mapped to 409 Conflict.
+url: "{{baseUrl}}/api/candidateprofiles"
+method: POST
+headers:
+  Content-Type: application/json
+  Accept: application/json
+body:
+  type: json
+  content: |-
+    {
+        "name": "Jane Doe Candidate",
+        "ocdId": "ocd-division/country:us/state:wi/cd:2",
+        "bio": "Duplicate submission attempt with same candidate name and district.",
+        "websiteUrl": "https://janedoe4congress.org"
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 409 Conflict", function () {
+          pm.response.to.have.status(409);
+      });
+
+      pm.test("Returns RFC 7807 ProblemDetails for duplicate rule", function () {
+          var jsonData = pm.response.json();
+          pm.expect(jsonData.status).to.eql(409);
+          pm.expect(jsonData.title).to.eql("Duplicate Candidate Profile");
+          pm.expect(jsonData.detail).to.include("already exists");
+      });
+    language: text/javascript
+order: 4000

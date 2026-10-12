@@ -2,6 +2,8 @@ namespace Coffeehouse.Api.Repositories;
 
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Coffeehouse.Api.Data;
 using Coffeehouse.Api.Models;
@@ -61,6 +63,7 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         context.CandidateProfiles.Add(profile);
         await context.SaveChangesAsync();
+        await SyncToFileAsync(context);
         return profile;
     }
 
@@ -79,6 +82,7 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
         existing.Bio = updated.Bio;
         existing.WebsiteUrl = updated.WebsiteUrl;
         await context.SaveChangesAsync();
+        await SyncToFileAsync(context);
         return true;
     }
 
@@ -94,7 +98,37 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
 
         context.CandidateProfiles.Remove(existing);
         await context.SaveChangesAsync();
+        await SyncToFileAsync(context);
         return true;
+    }
+
+    private static async Task SyncToFileAsync(AppDbContext context)
+    {
+        try
+        {
+            var dataDir = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Data");
+            if (!Directory.Exists(dataDir))
+            {
+                Directory.CreateDirectory(dataDir);
+            }
+
+            var filePath = Path.Combine(dataDir, "CandidateProfiles.json");
+            var profiles = await context.CandidateProfiles
+                .AsNoTracking()
+                .ToListAsync();
+
+            var options = new JsonSerializerOptions
+            {
+                WriteIndented = true
+            };
+
+            var json = JsonSerializer.Serialize(profiles, options);
+            await File.WriteAllTextAsync(filePath, json);
+        }
+        catch
+        {
+            // Logging or fallback if file access encounters permission restrictions
+        }
     }
 
     public async Task<Video?> AddVideoAsync(int candidateProfileId, Video video)

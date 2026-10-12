@@ -1,0 +1,12 @@
+$kind: http-request
+description: Deletes the profile created during the collection run, ensuring automated cleanup.
+url: "{{baseUrl}}/api/candidateprofiles/{{id}}"
+method: DELETE
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test("Status code is 204 No Content", function () {
+          pm.response.to.have.status(204);
+      });
+    language: text/javascript
+order: 11000
