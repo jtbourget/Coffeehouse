@@ -1,5 +1,6 @@
 using System.Text.Json;
 using Coffeehouse.Api.Models;
+using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse.Api.Services;
 
@@ -10,11 +11,13 @@ public class GoogleCivicService
 {
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
+    private readonly ILogger<GoogleCivicService> _logger;
 
-    public GoogleCivicService(HttpClient httpClient, IConfiguration configuration)
+    public GoogleCivicService(HttpClient httpClient, IConfiguration configuration, ILogger<GoogleCivicService> logger)
     {
         _httpClient = httpClient;
-        _apiKey = configuration["GoogleCivicApiKey"] ?? throw new ArgumentNullException("GoogleCivicApiKey is missing.");
+        _logger = logger;
+        _apiKey = configuration["GoogleCivicApiKey"] ?? string.Empty;
     }
 
     public async Task<List<string>> GetOcdIdsForAddressAsync(string address)
@@ -22,29 +25,41 @@ public class GoogleCivicService
         // Add statewide OCD-ID by default
         var ocdIds = new List<string> { "ocd-division/country:us/state:wi" };
 
-        var encodedAddress = Uri.EscapeDataString(address);
-        var url = $"https://www.googleapis.com/civicinfo/v2/representatives?address={encodedAddress}&key={_apiKey}";
-        
-        try
+        if (string.IsNullOrEmpty(_apiKey))
         {
-            var request = new HttpRequestMessage(HttpMethod.Get, url);
-            var response = await _httpClient.SendAsync(request);
+            _logger.LogInformation("No GoogleCivicApiKey configured. Using mock fallback for address: {Address}", address);
+        }
+        else
+        {
+            var encodedAddress = Uri.EscapeDataString(address);
+            var url = $"https://www.googleapis.com/civicinfo/v2/representatives?address={encodedAddress}&key={_apiKey}";
             
-            if (response.IsSuccessStatusCode)
+            try
             {
-                var content = await response.Content.ReadAsStringAsync();
-                var civicData = JsonSerializer.Deserialize<GoogleCivicInfoResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                var request = new HttpRequestMessage(HttpMethod.Get, url);
+                var response = await _httpClient.SendAsync(request);
                 
-                if (civicData?.Divisions != null)
+                if (response.IsSuccessStatusCode)
                 {
-                    ocdIds.AddRange(civicData.Divisions.Keys);
-                    return ocdIds.Distinct().ToList();
+                    var content = await response.Content.ReadAsStringAsync();
+                    var civicData = JsonSerializer.Deserialize<GoogleCivicInfoResponse>(content, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    
+                    if (civicData?.Divisions != null)
+                    {
+                        ocdIds.AddRange(civicData.Divisions.Keys);
+                        _logger.LogInformation("Google Civic API resolved {Count} OCD IDs for address: {Address}", ocdIds.Count, address);
+                        return ocdIds.Distinct().ToList();
+                    }
+                }
+                else
+                {
+                    _logger.LogWarning("Google Civic API returned status code {StatusCode} for address: {Address}", response.StatusCode, address);
                 }
             }
-        }
-        catch (Exception)
-        {
-            // Ignore API failures and fall back to mock
+            catch (Exception ex)
+            {
+                _logger.LogWarning(ex, "Exception querying Google Civic API for address: {Address}. Falling back to mock districts.", address);
+            }
         }
 
         // MOCK FALLBACK:

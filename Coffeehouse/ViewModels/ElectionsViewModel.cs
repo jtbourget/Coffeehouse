@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Coffeehouse.Models;
 using Coffeehouse.Services;
 using Coffeehouse.Views;
+using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse.ViewModels
 {
@@ -29,6 +30,7 @@ namespace Coffeehouse.ViewModels
         public ICommand SelectElectionCommand { get; }
 
         private readonly IApiService _apiService;
+        private readonly Microsoft.Extensions.Logging.ILogger<ElectionsViewModel> _logger;
         private bool _isBusy;
         public bool IsBusy
         {
@@ -46,9 +48,10 @@ namespace Coffeehouse.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="ElectionsViewModel"/> class.
         /// </summary>
-        public ElectionsViewModel(IApiService apiService)
+        public ElectionsViewModel(IApiService apiService, Microsoft.Extensions.Logging.ILogger<ElectionsViewModel> logger)
         {
             _apiService = apiService;
+            _logger = logger;
             LoadElectionsCommand = new Command(async () => await InitializeAsync());
             SelectElectionCommand = new Command<Election>(async (election) => await SelectElectionAsync(election));
         }
@@ -56,6 +59,7 @@ namespace Coffeehouse.ViewModels
         public async Task InitializeAsync()
         {
             IsBusy = true;
+            _logger.LogInformation("Loading elections list.");
             try
             {
                 var elections = await _apiService.GetElectionsAsync();
@@ -64,6 +68,11 @@ namespace Coffeehouse.ViewModels
                 {
                     Elections.Add(election);
                 }
+                _logger.LogInformation("Loaded {Count} elections.", Elections.Count);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error loading elections list.");
             }
             finally
             {
@@ -75,6 +84,7 @@ namespace Coffeehouse.ViewModels
         {
             if (election == null) return;
 
+            _logger.LogInformation("Selected election ID {Id} ('{Name}'). Navigating to BallotPage.", election.Id, election.Name);
             // Navigate to BallotPage using Shell navigation
             if (Shell.Current != null)
             {

@@ -4,6 +4,7 @@ using System.Windows.Input;
 using Coffeehouse.Models;
 using Coffeehouse.Services;
 using Coffeehouse.Views;
+using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse.ViewModels
 {
@@ -69,6 +70,7 @@ namespace Coffeehouse.ViewModels
         public ICommand FindBallotCommand { get; }
 
         private readonly IApiService _apiService;
+        private readonly Microsoft.Extensions.Logging.ILogger<AddressViewModel> _logger;
         private string _searchText = string.Empty;
         
         public string SearchText
@@ -92,18 +94,21 @@ namespace Coffeehouse.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="AddressViewModel"/> class.
         /// </summary>
-        public AddressViewModel(IApiService apiService)
+        public AddressViewModel(IApiService apiService, Microsoft.Extensions.Logging.ILogger<AddressViewModel> logger)
         {
             _apiService = apiService;
+            _logger = logger;
             FindBallotCommand = new Command(async () => await FindBallotAsync());
             SelectSuggestionCommand = new Command<AddressSuggestion>(async (s) => await SelectSuggestionAsync(s));
         }
 
         public async Task InitializeAsync()
         {
+            _logger.LogDebug("Initializing AddressViewModel: loading saved address.");
             var address = await _apiService.GetAddressAsync();
             if (address != null)
             {
+                _logger.LogInformation("Saved address loaded: {City}, {State}", address.City, address.State);
                 Street = address.Street;
                 City = address.City;
                 State = address.State;
@@ -121,6 +126,7 @@ namespace Coffeehouse.ViewModels
 
             try
             {
+                _logger.LogDebug("Searching address suggestions for query: {Query}", query);
                 var results = await _apiService.GetAddressSuggestionsAsync(query);
                 MainThread.BeginInvokeOnMainThread(() => 
                 {
@@ -133,6 +139,7 @@ namespace Coffeehouse.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error performing address search for query: {Query}", query);
                 MainThread.BeginInvokeOnMainThread(async () => 
                 {
                     if (Shell.Current != null)
@@ -145,6 +152,7 @@ namespace Coffeehouse.ViewModels
         {
             if (suggestion == null) return;
 
+            _logger.LogInformation("Selected address suggestion: {Description}", suggestion.Description);
             var details = await _apiService.GetPlaceDetailsAsync(suggestion.PlaceId);
             if (details != null)
             {
@@ -168,10 +176,13 @@ namespace Coffeehouse.ViewModels
                 if (string.IsNullOrWhiteSpace(Street) || string.IsNullOrWhiteSpace(City) || 
                     string.IsNullOrWhiteSpace(State) || string.IsNullOrWhiteSpace(ZipCode))
                 {
+                    _logger.LogWarning("FindBallot validation failed: missing required address fields.");
                     if (Shell.Current != null)
                         await Shell.Current.DisplayAlert("Validation", "Please fill in all address fields.", "OK");
                     return;
                 }
+
+                _logger.LogInformation("Finding ballot for address: {Street}, {City}, {State} {ZipCode}", Street, City, State, ZipCode);
 
                 // Construct a new UserAddress model with the provided details
                 var address = new UserAddress
@@ -185,11 +196,13 @@ namespace Coffeehouse.ViewModels
                 bool success = await _apiService.SaveAddressAsync(address);
                 if (!success) 
                 {
+                    _logger.LogError("Failed to save address to API.");
                     if (Shell.Current != null)
                         await Shell.Current.DisplayAlert("Error", "Failed to save address.", "OK");
                     return;
                 }
                 
+                _logger.LogInformation("Address saved successfully. Navigating to ElectionsPage.");
                 // Navigate to ElectionsPage using Shell navigation
                 if (Shell.Current != null)
                 {
@@ -198,6 +211,7 @@ namespace Coffeehouse.ViewModels
             }
             catch (Exception ex)
             {
+                _logger.LogError(ex, "Error finding ballot for address.");
                 if (Shell.Current != null)
                     await Shell.Current.DisplayAlert("Error", ex.Message, "OK");
             }

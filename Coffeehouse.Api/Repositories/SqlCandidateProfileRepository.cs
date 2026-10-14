@@ -10,6 +10,8 @@ using Coffeehouse.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// SQL-based implementation of the candidate profile repository using Entity Framework Core.
 /// Injected as a Singleton: uses IServiceScopeFactory to safely obtain scoped DbContext instances.
@@ -17,10 +19,12 @@ using Microsoft.Extensions.DependencyInjection;
 public class SqlCandidateProfileRepository : ICandidateProfileRepository
 {
     private readonly IServiceScopeFactory _scopeFactory;
+    private readonly ILogger<SqlCandidateProfileRepository> _logger;
 
-    public SqlCandidateProfileRepository(IServiceScopeFactory scopeFactory)
+    public SqlCandidateProfileRepository(IServiceScopeFactory scopeFactory, ILogger<SqlCandidateProfileRepository> logger)
     {
         _scopeFactory = scopeFactory;
+        _logger = logger;
     }
 
     public async Task<IEnumerable<CandidateProfile>> GetAllProfilesAsync(string? ocdId = null)
@@ -102,7 +106,7 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
         return true;
     }
 
-    private static async Task SyncToFileAsync(AppDbContext context)
+    private async Task SyncToFileAsync(AppDbContext context)
     {
         try
         {
@@ -124,10 +128,11 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
 
             var json = JsonSerializer.Serialize(profiles, options);
             await File.WriteAllTextAsync(filePath, json);
+            _logger.LogDebug("Synchronized {Count} candidate profiles to {FilePath}.", profiles.Count, filePath);
         }
-        catch
+        catch (Exception ex)
         {
-            // Logging or fallback if file access encounters permission restrictions
+            _logger.LogWarning(ex, "Failed to synchronize candidate profiles to Data/CandidateProfiles.json.");
         }
     }
 

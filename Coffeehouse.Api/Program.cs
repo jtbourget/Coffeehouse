@@ -1,6 +1,7 @@
 using Coffeehouse.Api.Data;
 using Coffeehouse.Api.Repositories;
 using Coffeehouse.Api.Services;
+using Microsoft.AspNetCore.HttpLogging;
 using Microsoft.AspNetCore.Mvc.ModelBinding.Metadata;
 using Microsoft.EntityFrameworkCore;
 
@@ -13,6 +14,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers(options =>
 {
     options.ModelMetadataDetailsProviders.Add(new SystemTextJsonValidationMetadataProvider());
+});
+
+// Configure HTTP request/response logging
+builder.Services.AddHttpLogging(logging =>
+{
+    logging.LoggingFields = HttpLoggingFields.RequestMethod
+        | HttpLoggingFields.RequestPath
+        | HttpLoggingFields.ResponseStatusCode
+        | HttpLoggingFields.Duration;
 });
 
 // Register OpenAPI services to generate API documentation automatically.
@@ -68,10 +78,15 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    app.Logger.LogInformation("Initializing database and verifying seed data...");
     SeedData.Initialize(context);
+    app.Logger.LogInformation("Database initialization completed successfully.");
 }
 
 // --- HTTP Pipeline Configuration ---
+
+// Enable HTTP request/response logging
+app.UseHttpLogging();
 
 // Enable OpenAPI endpoints (available in development and testing).
 if (app.Environment.IsDevelopment())
@@ -89,4 +104,5 @@ app.UseExceptionHandler();
 app.MapControllers();
 
 // Start the application and begin listening for incoming HTTP requests.
+app.Logger.LogInformation("Coffeehouse API starting on environment: {Environment}", app.Environment.EnvironmentName);
 app.Run();

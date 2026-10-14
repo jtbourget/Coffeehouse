@@ -1,5 +1,6 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse.Api.Services;
 
@@ -10,10 +11,12 @@ public class GeocodioService
 {
     private readonly HttpClient _httpClient;
     private readonly string _apiKey;
+    private readonly ILogger<GeocodioService> _logger;
 
-    public GeocodioService(HttpClient httpClient, IConfiguration configuration)
+    public GeocodioService(HttpClient httpClient, IConfiguration configuration, ILogger<GeocodioService> logger)
     {
         _httpClient = httpClient;
+        _logger = logger;
         // Check for GeocodioApiKey in user secrets / appsettings
         _apiKey = configuration["GeocodioApiKey"] ?? string.Empty;
     }
@@ -24,10 +27,11 @@ public class GeocodioService
 
         if (string.IsNullOrEmpty(_apiKey))
         {
-            // If the user hasn't set the key yet, return just the state-wide districts
+            _logger.LogInformation("No GeocodioApiKey configured. Returning default statewide OCD ID.");
             return ocdIds;
         }
 
+        _logger.LogDebug("Querying Geocodio API for address: {Address}", address);
         var encodedAddress = Uri.EscapeDataString(address);
         // Request cd (Congressional) and stateleg (State Senate/Assembly)
         var url = $"https://api.geocod.io/v1.7/geocode?q={encodedAddress}&fields=cd,stateleg&api_key={_apiKey}";
@@ -79,11 +83,17 @@ public class GeocodioService
                         }
                     }
                 }
+
+                _logger.LogInformation("Geocodio resolved {Count} OCD IDs for address: {Address}", ocdIds.Count, address);
+            }
+            else
+            {
+                _logger.LogWarning("Geocodio API returned status code {StatusCode} for address: {Address}", response.StatusCode, address);
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
-            // Fail gracefully
+            _logger.LogError(ex, "Exception while querying Geocodio API for address: {Address}", address);
         }
 
         return ocdIds.Distinct().ToList();

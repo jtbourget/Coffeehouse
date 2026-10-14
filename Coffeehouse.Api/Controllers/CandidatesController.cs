@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Coffeehouse.Api.DTOs;
 using Coffeehouse.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse.Api.Controllers
 {
@@ -14,14 +15,17 @@ namespace Coffeehouse.Api.Controllers
     public class CandidatesController : ControllerBase
     {
         private readonly ICandidateService _service;
+        private readonly ILogger<CandidatesController> _logger;
 
         /// <summary>
         /// Initializes a new instance of the CandidatesController.
         /// </summary>
         /// <param name="service">The candidate service.</param>
-        public CandidatesController(ICandidateService service)
+        /// <param name="logger">The logger instance.</param>
+        public CandidatesController(ICandidateService service, ILogger<CandidatesController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
         /// <summary>
@@ -32,6 +36,7 @@ namespace Coffeehouse.Api.Controllers
         [HttpGet("api/contests/{contestId}/candidates")]
         public async Task<ActionResult<IEnumerable<CandidateResponseDto>>> GetCandidatesForContest(int contestId)
         {
+            _logger.LogInformation("Handling GET /api/contests/{ContestId}/candidates request.", contestId);
             var candidates = await _service.GetCandidatesForContestAsync(contestId);
             if (candidates == null)
             {
@@ -49,6 +54,7 @@ namespace Coffeehouse.Api.Controllers
         [HttpGet("api/candidates/{id}")]
         public async Task<ActionResult<CandidateResponseDto>> GetCandidate(int id)
         {
+            _logger.LogInformation("Handling GET /api/candidates/{Id} request.", id);
             var candidate = await _service.GetCandidateAsync(id);
 
             if (candidate == null)

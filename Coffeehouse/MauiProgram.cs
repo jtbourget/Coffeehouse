@@ -16,11 +16,18 @@ namespace Coffeehouse
                 });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
+            builder.Logging.AddConsole();
+            builder.Logging.SetMinimumLevel(LogLevel.Debug);
+#else
+            builder.Logging.AddConsole();
+            builder.Logging.SetMinimumLevel(LogLevel.Information);
 #endif
 
             // Services
-            var baseAddress = DeviceInfo.Platform == DevicePlatform.Android ? "http://10.0.2.2:5032" : "http://localhost:5032";
+            // When using an actual Android phone over wireless adb (with adb reverse), localhost:5032 forwards to the PC.
+            // On standard emulators without port reverse, 10.0.2.2 is used.
+            var baseAddress = "http://localhost:5032";
             builder.Services.AddHttpClient("CoffeehouseApi", client =>
             {
                 client.BaseAddress = new Uri(baseAddress);

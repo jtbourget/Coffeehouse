@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Coffeehouse.Api.DTOs;
 using Coffeehouse.Api.Services;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse.Api.Controllers
 {
@@ -15,14 +16,17 @@ namespace Coffeehouse.Api.Controllers
     public class ElectionsController : ControllerBase
     {
         private readonly IElectionService _service;
+        private readonly ILogger<ElectionsController> _logger;
 
         /// <summary>
         /// Initializes a new instance of the ElectionsController.
         /// </summary>
         /// <param name="service">The election service.</param>
-        public ElectionsController(IElectionService service)
+        /// <param name="logger">The logger instance.</param>
+        public ElectionsController(IElectionService service, ILogger<ElectionsController> logger)
         {
             _service = service;
+            _logger = logger;
         }
 
         /// <summary>
@@ -32,6 +36,7 @@ namespace Coffeehouse.Api.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<ElectionResponseDto>>> GetElections()
         {
+            _logger.LogInformation("Handling GET /api/elections request.");
             var elections = await _service.GetAllElectionsAsync();
             return Ok(elections);
         }
@@ -44,6 +49,7 @@ namespace Coffeehouse.Api.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<ElectionResponseDto>> GetElection(int id)
         {
+            _logger.LogInformation("Handling GET /api/elections/{Id} request.", id);
             var election = await _service.GetElectionByIdAsync(id);
 
             if (election == null)

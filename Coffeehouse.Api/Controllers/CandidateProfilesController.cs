@@ -7,6 +7,8 @@ using Coffeehouse.Api.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
+using Microsoft.Extensions.Logging;
+
 /// <summary>
 /// Controller for managing candidate profiles.
 /// Uses literal route [Route("api/candidateprofiles")] and :int route constraints on id routes.
@@ -18,10 +20,12 @@ using Microsoft.AspNetCore.Mvc;
 public class CandidateProfilesController : ControllerBase
 {
     private readonly ICandidateProfileService _service;
+    private readonly ILogger<CandidateProfilesController> _logger;
 
-    public CandidateProfilesController(ICandidateProfileService service)
+    public CandidateProfilesController(ICandidateProfileService service, ILogger<CandidateProfilesController> logger)
     {
         _service = service;
+        _logger = logger;
     }
 
     /// <summary>
@@ -32,6 +36,7 @@ public class CandidateProfilesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CandidateProfileResponseDto>>> GetAll([FromQuery] string? ocdId)
     {
+        _logger.LogInformation("Handling GetAll candidate profiles request (ocdId: {OcdId})", ocdId);
         var profiles = await _service.GetAllProfilesAsync(ocdId);
         return Ok(profiles);
     }
@@ -44,6 +49,7 @@ public class CandidateProfilesController : ControllerBase
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CandidateProfileResponseDto>> GetById(int id)
     {
+        _logger.LogInformation("Handling GetById candidate profile request for ID {Id}", id);
         var profile = await _service.GetProfileAsync(id);
         if (profile == null)
         {
@@ -67,6 +73,7 @@ public class CandidateProfilesController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<CandidateProfileResponseDto>> Create([FromBody] SaveCandidateProfileRequestDto request)
     {
+        _logger.LogInformation("Handling Create candidate profile request for '{Name}'", request.Name);
         var outcome = await _service.CreateProfileAsync(request);
 
         return outcome.Status switch
@@ -102,6 +109,7 @@ public class CandidateProfilesController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, [FromBody] SaveCandidateProfileRequestDto request)
     {
+        _logger.LogInformation("Handling Update candidate profile request for ID {Id}", id);
         var outcome = await _service.UpdateProfileAsync(id, request);
 
         return outcome.Status switch
@@ -136,6 +144,7 @@ public class CandidateProfilesController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
+        _logger.LogInformation("Handling Delete candidate profile request for ID {Id}", id);
         var outcome = await _service.DeleteProfileAsync(id);
 
         return outcome.Status switch
@@ -162,6 +171,7 @@ public class CandidateProfilesController : ControllerBase
     [HttpPost("{id:int}/videos")]
     public async Task<ActionResult<VideoResponseDto>> AddVideo(int id, [FromBody] SaveVideoRequestDto request)
     {
+        _logger.LogInformation("Handling AddVideo request for candidate profile ID {Id}", id);
         var outcome = await _service.AddVideoAsync(id, request);
 
         return outcome.Status switch

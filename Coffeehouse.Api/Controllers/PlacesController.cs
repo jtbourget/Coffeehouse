@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 using Coffeehouse.Api.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse.Api.Controllers;
 
@@ -12,15 +13,18 @@ namespace Coffeehouse.Api.Controllers;
 public class PlacesController : ControllerBase
 {
     private readonly GooglePlacesService _placesService;
+    private readonly ILogger<PlacesController> _logger;
 
-    public PlacesController(GooglePlacesService placesService)
+    public PlacesController(GooglePlacesService placesService, ILogger<PlacesController> logger)
     {
         _placesService = placesService;
+        _logger = logger;
     }
 
     [HttpGet("autocomplete")]
     public async Task<IActionResult> Autocomplete([FromQuery] string query)
     {
+        _logger.LogInformation("Handling GET /api/places/autocomplete request with query: {Query}", query);
         if (string.IsNullOrWhiteSpace(query))
             return BadRequest("Query is required.");
 
@@ -51,6 +55,7 @@ public class PlacesController : ControllerBase
     [HttpGet("details/{placeId}")]
     public async Task<IActionResult> GetDetails(string placeId)
     {
+        _logger.LogInformation("Handling GET /api/places/details/{PlaceId} request.", placeId);
         var rawJson = await _placesService.GetPlaceDetailsAsync(placeId);
         
         using var document = JsonDocument.Parse(rawJson);

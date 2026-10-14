@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 using System.Windows.Input;
 using Coffeehouse.Models;
 using Coffeehouse.Services;
+using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse.ViewModels
 {
@@ -14,6 +15,7 @@ namespace Coffeehouse.ViewModels
     public class CandidateDetailViewModel : INotifyPropertyChanged
     {
         private readonly IApiService _apiService;
+        private readonly Microsoft.Extensions.Logging.ILogger<CandidateDetailViewModel> _logger;
         private Candidate? _currentCandidate;
         private bool _isFavorited;
         private int _contestId;
@@ -75,9 +77,10 @@ namespace Coffeehouse.ViewModels
         /// <summary>
         /// Initializes a new instance of the <see cref="CandidateDetailViewModel"/> class.
         /// </summary>
-        public CandidateDetailViewModel(IApiService apiService)
+        public CandidateDetailViewModel(IApiService apiService, Microsoft.Extensions.Logging.ILogger<CandidateDetailViewModel> logger)
         {
             _apiService = apiService;
+            _logger = logger;
             ToggleFavoriteCommand = new Command(async () => await ToggleFavoriteAsync());
             OpenWebsiteCommand = new Command(async () => await OpenWebsiteAsync());
         }
@@ -90,38 +93,47 @@ namespace Coffeehouse.ViewModels
         public async Task LoadCandidateAsync(int candidateId, int contestId)
         {
             _contestId = contestId;
-            CurrentCandidate = await _apiService.GetCandidateAsync(candidateId);
-            
-            // Need to know if this candidate is the favorite
-            // We can check all favorites for the current election.
-            // Since we don't have the electionId here easily, we can check via another API or 
-            // a custom endpoint. But wait, we can just get all favorites for the election, but we don't have electionId!
-            // Actually, we could have loaded it by checking if we have a favorite for this contest.
-            // Let's assume we can remove/add blindly or we can pass electionId.
-            // The prompt says "LoadCandidate(int candidateId, int contestId) method — fetches candidate from API, checks if favorited"
-            // Wait, we can't easily check if favorited without electionId unless the API gives it. 
-            // We'll leave IsFavorited check for later or assume it's part of Candidate model if API changed. 
-            // Actually, the simplest way is to pass ElectionId or use a workaround. 
-            // Let's pass ElectionId down if needed.
-            // Oh, we can get ElectionId from the candidate? No, candidate has ContestId.
-            // Let's assume IsFavorited is passed or we can query Election ID if we had it.
-            // Let's fetch all elections, find this contest? A bit heavy.
-            // Let's just set it false by default. In a real app we'd pass it in.
+            _logger.LogInformation("Loading candidate details for candidate ID {CandidateId}, contest ID {ContestId}.", candidateId, contestId);
+            try
+            {
+                CurrentCandidate = await _apiService.GetCandidateAsync(candidateId);
+                _logger.LogInformation("Successfully loaded details for candidate '{CandidateName}' (ID {CandidateId}).", CurrentCandidate?.Name, candidateId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Failed to load candidate details for ID {CandidateId}.", candidateId);
+            }
         }
 
         private async Task ToggleFavoriteAsync()
         {
             if (CurrentCandidate == null) return;
 
-            if (IsFavorited)
+            _logger.LogInformation("Toggling favorite for candidate ID {CandidateId} (contest ID {ContestId}). Currently favorited: {IsFavorited}", CurrentCandidate.Id, _contestId, IsFavorited);
+            try
             {
-                var success = await _apiService.RemoveFavoriteAsync(_contestId);
-                if (success) IsFavorited = false;
+                if (IsFavorited)
+                {
+                    var success = await _apiService.RemoveFavoriteAsync(_contestId);
+                    if (success)
+                    {
+                        IsFavorited = false;
+                        _logger.LogInformation("Removed candidate {CandidateId} from favorites.", CurrentCandidate.Id);
+                    }
+                }
+                else
+                {
+                    var success = await _apiService.SetFavoriteAsync(_contestId, CurrentCandidate.Id);
+                    if (success)
+                    {
+                        IsFavorited = true;
+                        _logger.LogInformation("Added candidate {CandidateId} to favorites.", CurrentCandidate.Id);
+                    }
+                }
             }
-            else
+            catch (Exception ex)
             {
-                var success = await _apiService.SetFavoriteAsync(_contestId, CurrentCandidate.Id);
-                if (success) IsFavorited = true;
+                _logger.LogError(ex, "Failed to toggle favorite for candidate ID {CandidateId}.", CurrentCandidate.Id);
             }
         }
 
@@ -129,11 +141,15 @@ namespace Coffeehouse.ViewModels
         {
             if (!string.IsNullOrEmpty(CurrentCandidate?.CampaignWebsite))
             {
+                _logger.LogInformation("Opening campaign website: {Website}", CurrentCandidate.CampaignWebsite);
                 try
                 {
                     await Launcher.Default.OpenAsync(new Uri(CurrentCandidate.CampaignWebsite));
                 }
-                catch (Exception) { /* Handle invalid URL */ }
+                catch (Exception ex)
+                {
+                    _logger.LogWarning(ex, "Failed to open campaign website URL: {Website}", CurrentCandidate.CampaignWebsite);
+                }
             }
         }
 

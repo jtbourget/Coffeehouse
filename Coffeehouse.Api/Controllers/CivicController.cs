@@ -2,6 +2,7 @@ using Coffeehouse.Api.Data;
 using Coffeehouse.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse.Api.Controllers;
 
@@ -14,16 +15,19 @@ public class CivicController : ControllerBase
 {
     private readonly AppDbContext _context;
     private readonly Services.GeocodioService _civicService;
+    private readonly ILogger<CivicController> _logger;
 
-    public CivicController(AppDbContext context, Services.GeocodioService civicService)
+    public CivicController(AppDbContext context, Services.GeocodioService civicService, ILogger<CivicController> logger)
     {
         _context = context;
         _civicService = civicService;
+        _logger = logger;
     }
 
     [HttpGet("elections")]
     public async Task<ActionResult<IEnumerable<Election>>> GetElections()
     {
+        _logger.LogInformation("Handling GET /api/civic/elections request.");
         var elections = await _context.Elections
             .Include(e => e.Contests)
                 .ThenInclude(c => c.Candidates)
@@ -74,6 +78,7 @@ public class CivicController : ControllerBase
     [HttpGet("elections/{id}")]
     public async Task<ActionResult<Election>> GetElection(int id)
     {
+        _logger.LogInformation("Handling GET /api/civic/elections/{Id} request.", id);
         var electionsResult = await GetElections();
         var okResult = electionsResult.Result as OkObjectResult;
         if (okResult?.Value is IEnumerable<Election> elections)
@@ -87,6 +92,7 @@ public class CivicController : ControllerBase
     [HttpGet("elections/{id}/contests")]
     public async Task<ActionResult<IEnumerable<Contest>>> GetContests(int id)
     {
+        _logger.LogInformation("Handling GET /api/civic/elections/{Id}/contests request.", id);
         var electionResult = await GetElection(id);
         if (electionResult.Result is OkObjectResult okResult && okResult.Value is Election election)
         {
@@ -98,6 +104,7 @@ public class CivicController : ControllerBase
     [HttpGet("contests/{contestId}/candidates")]
     public async Task<ActionResult<IEnumerable<Candidate>>> GetCandidates(int contestId)
     {
+        _logger.LogInformation("Handling GET /api/civic/contests/{ContestId}/candidates request.", contestId);
         var electionsResult = await GetElections();
         var okResult = electionsResult.Result as OkObjectResult;
         if (okResult?.Value is IEnumerable<Election> elections)
@@ -114,6 +121,7 @@ public class CivicController : ControllerBase
     [HttpGet("candidates/{id}")]
     public async Task<ActionResult<Candidate>> GetCandidate(int id)
     {
+        _logger.LogInformation("Handling GET /api/civic/candidates/{Id} request.", id);
         var electionsResult = await GetElections();
         var okResult = electionsResult.Result as OkObjectResult;
         if (okResult?.Value is IEnumerable<Election> elections)
