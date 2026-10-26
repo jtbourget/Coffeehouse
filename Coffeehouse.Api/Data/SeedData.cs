@@ -1,5 +1,7 @@
+using System.Text.Json;
 using Coffeehouse.Api.Models;
 using Microsoft.EntityFrameworkCore;
+
 namespace Coffeehouse.Api.Data
 {
     /// <summary>
@@ -16,8 +18,46 @@ namespace Coffeehouse.Api.Data
             // Ensure the database is created and apply pending migrations
             context.Database.Migrate();
 
-            // Inject the massive custom Wisconsin database
+            // Inject the custom Wisconsin database
             WiCandidateSeeder.SeedWisconsinElections(context);
+
+            // Seed candidate profiles if table is empty
+            if (!context.CandidateProfiles.Any())
+            {
+                var seedPaths = new[]
+                {
+                    Path.Combine(AppContext.BaseDirectory, "Data", "CandidateProfiles.json"),
+                    Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Data", "CandidateProfiles.json"),
+                    Path.Combine(Directory.GetCurrentDirectory(), "Data", "CandidateProfiles.json")
+                };
+
+                foreach (var path in seedPaths)
+                {
+                    if (File.Exists(path))
+                    {
+                        try
+                        {
+                            var json = File.ReadAllText(path);
+                            var profiles = JsonSerializer.Deserialize<List<CandidateProfile>>(json, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                            if (profiles != null && profiles.Count > 0)
+                            {
+                                foreach (var p in profiles)
+                                {
+                                    p.Id = 0; // Let SQL Server IDENTITY handle Id
+                                    p.Videos = new();
+                                }
+                                context.CandidateProfiles.AddRange(profiles);
+                                context.SaveChanges();
+                            }
+                            break;
+                        }
+                        catch
+                        {
+                            // Ignore and continue
+                        }
+                    }
+                }
+            }
 
             if (context.Elections.Any())
             {

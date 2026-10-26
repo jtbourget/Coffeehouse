@@ -4,19 +4,20 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Coffeehouse.Api.DTOs;
 using Coffeehouse.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-
 using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Controller for managing candidate profiles.
-/// Uses literal route [Route("api/candidateprofiles")] and :int route constraints on id routes.
-/// Actions stay thin by calling the service once and mapping the outcome to status codes.
-/// No business rules, no file access, and no try/catch blocks (handled globally).
+/// Uses literal routes and :int route constraints on id routes.
+/// Protects write operations (POST, PUT, DELETE) with the CandidateProfileWrite policy.
+/// GET operations remain public (AllowAnonymous).
 /// </summary>
 [ApiController]
 [Route("api/candidateprofiles")]
+[Route("api/candidates")]
 public class CandidateProfilesController : ControllerBase
 {
     private readonly ICandidateProfileService _service;
@@ -31,9 +32,8 @@ public class CandidateProfilesController : ControllerBase
     /// <summary>
     /// Retrieves all candidate profiles, optionally filtered by district (ocdId).
     /// </summary>
-    /// <param name="ocdId">Optional district identifier query parameter.</param>
-    /// <returns>HTTP 200 with list of profiles.</returns>
     [HttpGet]
+    [AllowAnonymous]
     public async Task<ActionResult<IEnumerable<CandidateProfileResponseDto>>> GetAll([FromQuery] string? ocdId)
     {
         _logger.LogInformation("Handling GetAll candidate profiles request (ocdId: {OcdId})", ocdId);
@@ -44,9 +44,8 @@ public class CandidateProfilesController : ControllerBase
     /// <summary>
     /// Retrieves a single candidate profile by integer ID.
     /// </summary>
-    /// <param name="id">The profile ID constraint to integer.</param>
-    /// <returns>HTTP 200 with profile or HTTP 404 if not found.</returns>
     [HttpGet("{id:int}")]
+    [AllowAnonymous]
     public async Task<ActionResult<CandidateProfileResponseDto>> GetById(int id)
     {
         _logger.LogInformation("Handling GetById candidate profile request for ID {Id}", id);
@@ -65,130 +64,144 @@ public class CandidateProfilesController : ControllerBase
     }
 
     /// <summary>
-    /// Creates a new candidate profile.
-    /// Enforces DataAnnotations validation rules and duplicate name/ocdId business rule.
+    /// Creates a new candidate profile. Protected by CandidateProfileWrite policy.
     /// </summary>
-    /// <param name="request">The candidate profile request DTO.</param>
-    /// <returns>HTTP 201 CreatedAtAction with Location header, HTTP 400 on invalid input, or HTTP 409 on duplicate.</returns>
     [HttpPost]
+    [Authorize("CandidateProfileWrite")]
     public async Task<ActionResult<CandidateProfileResponseDto>> Create([FromBody] SaveCandidateProfileRequestDto request)
     {
         _logger.LogInformation("Handling Create candidate profile request for '{Name}'", request.Name);
         var outcome = await _service.CreateProfileAsync(request);
 
-        return outcome.Status switch
+        switch (outcome.Status)
         {
-            ServiceOutcomeStatus.Success => CreatedAtAction(nameof(GetById), new { id = outcome.Data!.Id }, outcome.Data),
-            ServiceOutcomeStatus.Duplicate => Conflict(new ProblemDetails
-            {
-                Title = "Duplicate Candidate Profile",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status409Conflict
-            }),
-            ServiceOutcomeStatus.InvalidInput => BadRequest(new ProblemDetails
-            {
-                Title = "Validation Error",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status400BadRequest
-            }),
-            _ => BadRequest(new ProblemDetails
-            {
-                Title = "Bad Request",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status400BadRequest
-            })
-        };
+            case ServiceOutcomeStatus.Success:
+                _logger.LogInformation("Created candidate profile with ID {Id} for '{Name}'.", outcome.Data!.Id, outcome.Data.Name);
+                return CreatedAtAction(nameof(GetById), new { id = outcome.Data!.Id }, outcome.Data);
+            case ServiceOutcomeStatus.Duplicate:
+                return Conflict(new ProblemDetails
+                {
+                    Title = "Duplicate Candidate Profile",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status409Conflict
+                });
+            case ServiceOutcomeStatus.InvalidInput:
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Validation Error",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status400BadRequest
+                });
+            default:
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Bad Request",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status400BadRequest
+                });
+        }
     }
 
     /// <summary>
-    /// Updates an existing candidate profile by integer ID.
+    /// Updates an existing candidate profile by integer ID. Protected by CandidateProfileWrite policy.
     /// </summary>
-    /// <param name="id">The profile ID constraint to integer.</param>
-    /// <param name="request">The updated profile request DTO.</param>
-    /// <returns>HTTP 204 on success, HTTP 404 if not found, HTTP 400 on invalid input, or HTTP 409 on duplicate.</returns>
     [HttpPut("{id:int}")]
+    [Authorize("CandidateProfileWrite")]
     public async Task<IActionResult> Update(int id, [FromBody] SaveCandidateProfileRequestDto request)
     {
         _logger.LogInformation("Handling Update candidate profile request for ID {Id}", id);
         var outcome = await _service.UpdateProfileAsync(id, request);
 
-        return outcome.Status switch
+        switch (outcome.Status)
         {
-            ServiceOutcomeStatus.Success => NoContent(),
-            ServiceOutcomeStatus.NotFound => NotFound(new ProblemDetails
-            {
-                Title = "Candidate Profile Not Found",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status404NotFound
-            }),
-            ServiceOutcomeStatus.Duplicate => Conflict(new ProblemDetails
-            {
-                Title = "Duplicate Candidate Profile",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status409Conflict
-            }),
-            _ => BadRequest(new ProblemDetails
-            {
-                Title = "Bad Request",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status400BadRequest
-            })
-        };
+            case ServiceOutcomeStatus.Success:
+                _logger.LogInformation("Updated candidate profile with ID {Id}.", id);
+                return NoContent();
+            case ServiceOutcomeStatus.NotFound:
+                return NotFound(new ProblemDetails
+                {
+                    Title = "Candidate Profile Not Found",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status404NotFound
+                });
+            case ServiceOutcomeStatus.Duplicate:
+                return Conflict(new ProblemDetails
+                {
+                    Title = "Duplicate Candidate Profile",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status409Conflict
+                });
+            default:
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Bad Request",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status400BadRequest
+                });
+        }
     }
 
     /// <summary>
-    /// Deletes a candidate profile by integer ID.
+    /// Deletes a candidate profile by integer ID. Protected by CandidateProfileWrite policy.
     /// </summary>
-    /// <param name="id">The profile ID constraint to integer.</param>
-    /// <returns>HTTP 204 on success or HTTP 404 if not found.</returns>
     [HttpDelete("{id:int}")]
+    [Authorize("CandidateProfileWrite")]
     public async Task<IActionResult> Delete(int id)
     {
         _logger.LogInformation("Handling Delete candidate profile request for ID {Id}", id);
         var outcome = await _service.DeleteProfileAsync(id);
 
-        return outcome.Status switch
+        switch (outcome.Status)
         {
-            ServiceOutcomeStatus.Success => NoContent(),
-            ServiceOutcomeStatus.NotFound => NotFound(new ProblemDetails
-            {
-                Title = "Candidate Profile Not Found",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status404NotFound
-            }),
-            _ => BadRequest(new ProblemDetails
-            {
-                Title = "Bad Request",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status400BadRequest
-            })
-        };
+            case ServiceOutcomeStatus.Success:
+                _logger.LogInformation("Deleted candidate profile with ID {Id}.", id);
+                return NoContent();
+            case ServiceOutcomeStatus.NotFound:
+                return NotFound(new ProblemDetails
+                {
+                    Title = "Candidate Profile Not Found",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status404NotFound
+                });
+            default:
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Bad Request",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status400BadRequest
+                });
+        }
     }
 
     /// <summary>
-    /// Adds a video to a candidate profile.
+    /// Adds a video to a candidate profile. Protected by CandidateProfileWrite policy.
     /// </summary>
     [HttpPost("{id:int}/videos")]
+    [Authorize("CandidateProfileWrite")]
     public async Task<ActionResult<VideoResponseDto>> AddVideo(int id, [FromBody] SaveVideoRequestDto request)
     {
         _logger.LogInformation("Handling AddVideo request for candidate profile ID {Id}", id);
         var outcome = await _service.AddVideoAsync(id, request);
 
-        return outcome.Status switch
+        switch (outcome.Status)
         {
-            ServiceOutcomeStatus.Success => Ok(outcome.Data),
-            ServiceOutcomeStatus.NotFound => NotFound(new ProblemDetails
-            {
-                Title = "Candidate Profile Not Found",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status404NotFound
-            }),
-            _ => BadRequest(new ProblemDetails
-            {
-                Title = "Bad Request",
-                Detail = outcome.ErrorMessage,
-                Status = StatusCodes.Status400BadRequest
-            })
-        };
+            case ServiceOutcomeStatus.Success:
+                _logger.LogInformation("Added video to candidate profile ID {Id}.", id);
+                return Ok(outcome.Data);
+            case ServiceOutcomeStatus.NotFound:
+                return NotFound(new ProblemDetails
+                {
+                    Title = "Candidate Profile Not Found",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status404NotFound
+                });
+            default:
+                return BadRequest(new ProblemDetails
+                {
+                    Title = "Bad Request",
+                    Detail = outcome.ErrorMessage,
+                    Status = StatusCodes.Status400BadRequest
+                });
+        }
     }
 }

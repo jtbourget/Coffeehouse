@@ -2,19 +2,15 @@ namespace Coffeehouse.Api.Repositories;
 
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Coffeehouse.Api.Data;
 using Coffeehouse.Api.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-
 using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// SQL-based implementation of the candidate profile repository using Entity Framework Core.
-/// Injected as a Singleton: uses IServiceScopeFactory to safely obtain scoped DbContext instances.
 /// </summary>
 public class SqlCandidateProfileRepository : ICandidateProfileRepository
 {
@@ -33,11 +29,12 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         var query = context.CandidateProfiles
             .Include(p => p.Videos)
+            .AsNoTracking()
             .AsQueryable();
 
         if (!string.IsNullOrWhiteSpace(ocdId))
         {
-            var trimmedOcdId = ocdId.Trim().ToLower();
+            var trimmedOcdId = ocdId.Trim().ToLowerInvariant();
             query = query.Where(p => p.OcdId.ToLower() == trimmedOcdId);
         }
 
@@ -50,6 +47,7 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         return await context.CandidateProfiles
             .Include(p => p.Videos)
+            .AsNoTracking()
             .FirstOrDefaultAsync(p => p.Id == id);
     }
 
@@ -57,8 +55,11 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
     {
         using var scope = _scopeFactory.CreateScope();
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var nameLower = name.ToLowerInvariant();
+        var ocdIdLower = ocdId.ToLowerInvariant();
         return await context.CandidateProfiles
-            .FirstOrDefaultAsync(p => p.Name.ToLower() == name.ToLower() && p.OcdId.ToLower() == ocdId.ToLower());
+            .AsNoTracking()
+            .FirstOrDefaultAsync(p => p.Name.ToLower() == nameLower && p.OcdId.ToLower() == ocdIdLower);
     }
 
     public async Task<CandidateProfile> CreateProfileAsync(CandidateProfile profile)
@@ -67,7 +68,7 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
         var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
         context.CandidateProfiles.Add(profile);
         await context.SaveChangesAsync();
-        await SyncToFileAsync(context);
+        _logger.LogInformation("SQL Store: Created candidate profile {Id} ('{Name}')", profile.Id, profile.Name);
         return profile;
     }
 
@@ -86,7 +87,7 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
         existing.Bio = updated.Bio;
         existing.WebsiteUrl = updated.WebsiteUrl;
         await context.SaveChangesAsync();
-        await SyncToFileAsync(context);
+        _logger.LogInformation("SQL Store: Updated candidate profile {Id}", id);
         return true;
     }
 
@@ -102,38 +103,8 @@ public class SqlCandidateProfileRepository : ICandidateProfileRepository
 
         context.CandidateProfiles.Remove(existing);
         await context.SaveChangesAsync();
-        await SyncToFileAsync(context);
+        _logger.LogInformation("SQL Store: Deleted candidate profile {Id}", id);
         return true;
-    }
-
-    private async Task SyncToFileAsync(AppDbContext context)
-    {
-        try
-        {
-            var dataDir = Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "Data");
-            if (!Directory.Exists(dataDir))
-            {
-                Directory.CreateDirectory(dataDir);
-            }
-
-            var filePath = Path.Combine(dataDir, "CandidateProfiles.json");
-            var profiles = await context.CandidateProfiles
-                .AsNoTracking()
-                .ToListAsync();
-
-            var options = new JsonSerializerOptions
-            {
-                WriteIndented = true
-            };
-
-            var json = JsonSerializer.Serialize(profiles, options);
-            await File.WriteAllTextAsync(filePath, json);
-            _logger.LogDebug("Synchronized {Count} candidate profiles to {FilePath}.", profiles.Count, filePath);
-        }
-        catch (Exception ex)
-        {
-            _logger.LogWarning(ex, "Failed to synchronize candidate profiles to Data/CandidateProfiles.json.");
-        }
     }
 
     public async Task<Video?> AddVideoAsync(int candidateProfileId, Video video)

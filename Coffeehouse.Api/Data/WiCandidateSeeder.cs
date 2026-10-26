@@ -28,8 +28,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Tom Tiffany / David Varnam", Party = "Republican", PhotoUrl = "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d6/Tom_Tiffany.jpg/960px-Tom_Tiffany.jpg", CampaignWebsite = "https://tomtiffany.com/" },
-                        new Candidate { Name = "David Crowley / Sarah Godlewski", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=839", CampaignWebsite = "" }
+                        new Candidate { Name = "Tom Tiffany / David Varnam", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Tom_Tiffany.jpg", CampaignWebsite = "https://tomtiffany.com/" },
+                        new Candidate { Name = "David Crowley / Sarah Godlewski", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/David_Crowley.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -38,8 +38,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Eric Toney", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=821", CampaignWebsite = "" },
-                        new Candidate { Name = "Josh Kaul", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=426", CampaignWebsite = "" }
+                        new Candidate { Name = "Eric Toney", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Toney-Headshot-102426_20261001_025206_61750_1.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Josh Kaul", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/AG-Kaul-Headshot-_1__20261001_035225_62422_1.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -48,9 +48,9 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Jay Schroeder", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=733", CampaignWebsite = "" },
-                        new Candidate { Name = "JoCasta Zamarripa", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=140", CampaignWebsite = "" },
-                        new Candidate { Name = "Pete Karas", Party = "Wisconsin", PhotoUrl = "https://picsum.photos/200?random=626", CampaignWebsite = "" }
+                        new Candidate { Name = "Jay Schroeder", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Jay_Schroeder_2026-10-15_143130.png", CampaignWebsite = "" },
+                        new Candidate { Name = "JoCasta Zamarripa", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/JoCasta_Zamarripa_Headshot_2026-10-06_190004.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Pete Karas", Party = "Wisconsin", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Pete_Karas_20260219_061420.png", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -59,8 +59,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "John S. Leiber", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=965", CampaignWebsite = "" },
-                        new Candidate { Name = "Yee Leng Xiong", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=326", CampaignWebsite = "" }
+                        new Candidate { Name = "John S. Leiber", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/State-Treasurer-John-Leiber-x-small_2__20260922_152253_34839_1.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Yee Leng Xiong", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/YeeLengXiong2026_2026-07-01_183510.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -69,8 +69,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/cd:1",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Bryan Steil", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=578", CampaignWebsite = "" },
-                        new Candidate { Name = "Mitchell Berman", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=207", CampaignWebsite = "" }
+                        new Candidate { Name = "Bryan Steil", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Steil_Official_Headshot.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Mitchell Berman", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Mitchell_Berman.png", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -79,7 +79,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/cd:2",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Mark Pocan", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=110", CampaignWebsite = "" }
+                        new Candidate { Name = "Mark Pocan", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/400px-Mark_Pocan_official_photo.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -88,10 +88,10 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/cd:3",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Alexander Valiensi Kent", Party = "Independent", PhotoUrl = "https://picsum.photos/200?random=648", CampaignWebsite = "" },
-                        new Candidate { Name = "Rustin Provance", Party = "Independent", PhotoUrl = "https://picsum.photos/200?random=140", CampaignWebsite = "" },
-                        new Candidate { Name = "Derrick Van Orden", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=548", CampaignWebsite = "" },
-                        new Candidate { Name = "Rebecca Cooke", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=115", CampaignWebsite = "" }
+                        new Candidate { Name = "Alexander Valiensi Kent", Party = "Independent", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Alexander_Valiensi_Kent.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Rustin Provance", Party = "Independent", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/RustinProvance23.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Derrick Van Orden", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Derrick-VanOrden.PNG", CampaignWebsite = "" },
+                        new Candidate { Name = "Rebecca Cooke", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Rebecca_Cooke_2026.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -100,9 +100,9 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/cd:4",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Arthur Burks", Party = "Independent", PhotoUrl = "https://picsum.photos/200?random=773", CampaignWebsite = "" },
-                        new Candidate { Name = "Tim Rogers", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=927", CampaignWebsite = "" },
-                        new Candidate { Name = "Gwen Moore", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=182", CampaignWebsite = "" }
+                        new Candidate { Name = "Arthur Burks", Party = "Independent", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/64/Arthur_Burks_1971.jpg/500px-Arthur_Burks_1971.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
+                        new Candidate { Name = "Tim Rogers", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Tim_Rogers.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Gwen Moore", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Gwen_Moore.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -111,8 +111,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/cd:5",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Scott Fitzgerald", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=203", CampaignWebsite = "" },
-                        new Candidate { Name = "Andrew Beck", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=943", CampaignWebsite = "" }
+                        new Candidate { Name = "Scott Fitzgerald", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/ScottFitzgerald.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Andrew Beck", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/AndrewBeck2025.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -121,11 +121,11 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/cd:6",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Elizabeth Anne Fitzgibbon", Party = "Independent", PhotoUrl = "https://picsum.photos/200?random=974", CampaignWebsite = "" },
-                        new Candidate { Name = "Mike Thurow", Party = "Independent", PhotoUrl = "https://picsum.photos/200?random=434", CampaignWebsite = "" },
-                        new Candidate { Name = "Glenn Grothman", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=971", CampaignWebsite = "" },
+                        new Candidate { Name = "Elizabeth Anne Fitzgibbon", Party = "Independent", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/1024x1024-headshot_20260621_055703_41816_1.png", CampaignWebsite = "" },
+                        new Candidate { Name = "Mike Thurow", Party = "Independent", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Michael_Thurow.jpeg", CampaignWebsite = "" },
+                        new Candidate { Name = "Glenn Grothman", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Glenn_Grothman_official_congressional_photo.jpg", CampaignWebsite = "" },
                         new Candidate { Name = "Brad Smith", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=428", CampaignWebsite = "" },
-                        new Candidate { Name = "Matthew Arndt", Party = "Wisconsin", PhotoUrl = "https://picsum.photos/200?random=384", CampaignWebsite = "" }
+                        new Candidate { Name = "Matthew Arndt", Party = "Wisconsin", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Matthew-Arndt004-WEB_20260928_190942_35321_1.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -134,8 +134,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/cd:7",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Michael Alfonso", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=388", CampaignWebsite = "" },
-                        new Candidate { Name = "Fred Clark", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=717", CampaignWebsite = "" }
+                        new Candidate { Name = "Michael Alfonso", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/alfonsomichael_2026-05-28_022242.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Fred Clark", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Fred_Clark.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -144,8 +144,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/cd:8",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Tony Wied", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=979", CampaignWebsite = "" },
-                        new Candidate { Name = "Rick Crosson", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=478", CampaignWebsite = "" }
+                        new Candidate { Name = "Tony Wied", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Tony_Wied.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Rick Crosson", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Rick_Crosson.jpeg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -154,8 +154,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldu:1",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Mark Becker", Party = "Independent", PhotoUrl = "https://picsum.photos/200?random=363", CampaignWebsite = "" },
-                        new Candidate { Name = "Nic Cravillion", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=252", CampaignWebsite = "" }
+                        new Candidate { Name = "Mark Becker", Party = "Independent", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/OFFICIALHS_20260817_034918_51541_1.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Nic Cravillion", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Cravillion-Nic_20260604_043546_29285_1.jpeg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -164,7 +164,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldu:3",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Tim Carpenter", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=710", CampaignWebsite = "" }
+                        new Candidate { Name = "Tim Carpenter", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/TimCarpenter.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -173,8 +173,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldu:5",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Mike Roberts", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=827", CampaignWebsite = "" },
-                        new Candidate { Name = "Robyn Vining", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=271", CampaignWebsite = "" }
+                        new Candidate { Name = "Mike Roberts", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/69643a086cf3e25232bdde39-IMG-6272-p-800_20260603_004912_29213_1.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Robyn Vining", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/RobynVining24.jpeg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -183,8 +183,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldu:7",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Mike Moeller", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=770", CampaignWebsite = "" },
-                        new Candidate { Name = "Chris J. Larson", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=964", CampaignWebsite = "" }
+                        new Candidate { Name = "Mike Moeller", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Mike_Moeller_20240930_011424.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Chris J. Larson", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/ChrisLarson.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -193,8 +193,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldu:9",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Christian Ellis", Party = "Independent", PhotoUrl = "https://picsum.photos/200?random=479", CampaignWebsite = "" },
-                        new Candidate { Name = "Amy Binsfeld", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=533", CampaignWebsite = "" }
+                        new Candidate { Name = "Christian Ellis", Party = "Independent", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/Christian-Headshot-01_20260817_034302_51531_1.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Amy Binsfeld", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/AmyBinsfeld.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -203,8 +203,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldu:11",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Ellen Schutt", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=303", CampaignWebsite = "" },
-                        new Candidate { Name = "Adam Duda", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=987", CampaignWebsite = "" }
+                        new Candidate { Name = "Ellen Schutt", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/EllenSchutt.jpg", CampaignWebsite = "" },
+                        new Candidate { Name = "Adam Duda", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/adam-duda-headshot-ballotpedia_20260623_034209_42072_1.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -213,8 +213,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldu:13",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "John Jagler", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=405", CampaignWebsite = "" },
-                        new Candidate { Name = "Sasha Ripley", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=363", CampaignWebsite = "" }
+                        new Candidate { Name = "John Jagler", Party = "Republican", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/JohnJagler.PNG", CampaignWebsite = "" },
+                        new Candidate { Name = "Sasha Ripley", Party = "Democratic", PhotoUrl = "https://s3.amazonaws.com/ballotpedia-api4/files/thumbs/200/300/20251008-173717_20260717_031703_31443_1.jpg", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -223,7 +223,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldu:15",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Christopher Dean", Party = "Serving People Not Parties", PhotoUrl = "https://picsum.photos/200?random=787", CampaignWebsite = "" },
+                        new Candidate { Name = "Christopher Dean", Party = "Serving People Not Parties", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/25/Christopher_Dean.jpg/500px-Christopher_Dean.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Scott Fleming", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=436", CampaignWebsite = "" },
                         new Candidate { Name = "Mark Spreitzer", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=227", CampaignWebsite = "" }
                     }
@@ -284,7 +284,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldu:27",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Dianne Hesselbein", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=149", CampaignWebsite = "" }
+                        new Candidate { Name = "Dianne Hesselbein", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Dianne_Hesselbein_inauguration_%28cropped%29.jpeg/500px-Dianne_Hesselbein_inauguration_%28cropped%29.jpeg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -333,7 +333,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:2",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Shae Sortwell", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=340", CampaignWebsite = "" },
+                        new Candidate { Name = "Shae Sortwell", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f0/Shae_Sortwell_by_Gage_Skidmore_2.jpg/500px-Shae_Sortwell_by_Gage_Skidmore_2.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Alicia Saunders", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=458", CampaignWebsite = "" }
                     }
                 },
@@ -363,7 +363,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:5",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Joy Goeben", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=935", CampaignWebsite = "" },
+                        new Candidate { Name = "Joy Goeben", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/7c/Joy_Goeben_by_Gage_Skidmore.jpg/500px-Joy_Goeben_by_Gage_Skidmore.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Justin Schumacher", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=991", CampaignWebsite = "" },
                         new Candidate { Name = "David Schupbach", Party = "Wisconsin", PhotoUrl = "https://picsum.photos/200?random=408", CampaignWebsite = "" }
                     }
@@ -385,7 +385,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Lee Whiting", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=406", CampaignWebsite = "" },
-                        new Candidate { Name = "Karen Kirsch", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=321", CampaignWebsite = "" }
+                        new Candidate { Name = "Karen Kirsch", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/99/Representative_Karen_Kirsch_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg/500px-Representative_Karen_Kirsch_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -425,7 +425,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Shandowlyon Reaves", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=755", CampaignWebsite = "" },
-                        new Candidate { Name = "Sequanna Taylor", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=748", CampaignWebsite = "" }
+                        new Candidate { Name = "Sequanna Taylor", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f3/Representative_Sequanna_Taylor_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg/500px-Representative_Sequanna_Taylor_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -463,7 +463,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:15",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Adam Neylon", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=375", CampaignWebsite = "" },
+                        new Candidate { Name = "Adam Neylon", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/be/Representative_Adam_Neylon.jpg/500px-Representative_Adam_Neylon.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Stephen Tryon", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=948", CampaignWebsite = "" }
                     }
                 },
@@ -474,7 +474,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Alciro Deacon", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=850", CampaignWebsite = "" },
-                        new Candidate { Name = "Kalan Haywood", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=171", CampaignWebsite = "" }
+                        new Candidate { Name = "Kalan Haywood", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Kalan_Haywood_at_the_University_of_Chicago.jpg/500px-Kalan_Haywood_at_the_University_of_Chicago.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -494,7 +494,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Joel Richmond", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=209", CampaignWebsite = "" },
-                        new Candidate { Name = "Margaret Arney", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=599", CampaignWebsite = "" }
+                        new Candidate { Name = "Margaret Arney", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/Representative_Margaret_Arney_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg/500px-Representative_Margaret_Arney_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -504,7 +504,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Yasmine B. Outlaw", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=259", CampaignWebsite = "" },
-                        new Candidate { Name = "Ryan Clancy", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=854", CampaignWebsite = "" }
+                        new Candidate { Name = "Ryan Clancy", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ed/RyanClancy.jpg/500px-RyanClancy.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -553,7 +553,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:24",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Dan Knodl", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=749", CampaignWebsite = "" },
+                        new Candidate { Name = "Dan Knodl", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a3/Dan_Knodl_by_Gage_Skidmore.jpg/500px-Dan_Knodl_by_Gage_Skidmore.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Matt Brown", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=309", CampaignWebsite = "" }
                     }
                 },
@@ -563,7 +563,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:25",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Paul Tittl", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=312", CampaignWebsite = "" },
+                        new Candidate { Name = "Paul Tittl", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/04/Paul_Tittl_Chilton_Wisconsin_Parade.jpg/500px-Paul_Tittl_Chilton_Wisconsin_Parade.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Christopher Able", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=704", CampaignWebsite = "" }
                     }
                 },
@@ -583,7 +583,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:27",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Lindee Brill", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=449", CampaignWebsite = "" }
+                        new Candidate { Name = "Lindee Brill", Party = "Republican", PhotoUrl = "https://upload.wikimedia.org/wikipedia/commons/4/4e/Representative_Brill.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -603,7 +603,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Treig Pronschinske", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=35", CampaignWebsite = "" },
-                        new Candidate { Name = "Chris Danou", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=517", CampaignWebsite = "" }
+                        new Candidate { Name = "Chris Danou", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/68/Chris_Danou_2009.jpg/500px-Chris_Danou_2009.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -622,8 +622,8 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:31",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Tyler August", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=813", CampaignWebsite = "" },
-                        new Candidate { Name = "John Perryman", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=5", CampaignWebsite = "" }
+                        new Candidate { Name = "Tyler August", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/Tyler_August.jpg/500px-Tyler_August.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
+                        new Candidate { Name = "John Perryman", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a7/MCPON_John_J._Perryman_IV.jpg/500px-MCPON_John_J._Perryman_IV.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -662,7 +662,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:35",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Calvin Callahan", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=635", CampaignWebsite = "" },
+                        new Candidate { Name = "Calvin Callahan", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f9/Portrait_of_Rep._Calvin_Callahan.png/500px-Portrait_of_Rep._Calvin_Callahan.png?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Elizabeth McCrank", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=196", CampaignWebsite = "" }
                     }
                 },
@@ -713,7 +713,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Julie Helmer", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=570", CampaignWebsite = "" },
-                        new Candidate { Name = "Karen DeSanto", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=485", CampaignWebsite = "" }
+                        new Candidate { Name = "Karen DeSanto", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5c/Representative_Karen_DeSanto_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg/500px-Representative_Karen_DeSanto_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -732,7 +732,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:42",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Keith F. Miller", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=637", CampaignWebsite = "" },
+                        new Candidate { Name = "Keith F. Miller", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3a/Keith_Miller_1951.jpg/500px-Keith_Miller_1951.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Maureen McCarville", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=738", CampaignWebsite = "" }
                     }
                 },
@@ -743,7 +743,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Paul McGraw", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=125", CampaignWebsite = "" },
-                        new Candidate { Name = "Brienne Brown", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=502", CampaignWebsite = "" }
+                        new Candidate { Name = "Brienne Brown", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/28/Representative_Brienne_Brown_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg/500px-Representative_Brienne_Brown_at_Black_Advocacy_Day_at_the_Capitol%2C_Madison%2C_WI_022626.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -793,7 +793,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Mark Kjorlie", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=458", CampaignWebsite = "" },
-                        new Candidate { Name = "Andrew Hysell", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=78", CampaignWebsite = "" }
+                        new Candidate { Name = "Andrew Hysell", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/eb/Rep_at_Black_Advocacy_Day_at_the_Capital%2C_Madison%2C_WI_022626.jpg/500px-Rep_at_Black_Advocacy_Day_at_the_Capital%2C_Madison%2C_WI_022626.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -823,7 +823,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Nathan Tataje", Party = "American", PhotoUrl = "https://picsum.photos/200?random=701", CampaignWebsite = "" },
-                        new Candidate { Name = "Todd Novak", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=601", CampaignWebsite = "" },
+                        new Candidate { Name = "Todd Novak", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/aa/Rep._Novak_2025-27_Official_Headshot.jpg/500px-Rep._Novak_2025-27_Official_Headshot.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Ben Gruber", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=810", CampaignWebsite = "" }
                     }
                 },
@@ -864,7 +864,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:55",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Nate Gustafson", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=844", CampaignWebsite = "" },
+                        new Candidate { Name = "Nate Gustafson", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/53/Nate_Gustafson_by_Gage_Skidmore.jpg/500px-Nate_Gustafson_by_Gage_Skidmore.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Alex Corrigan", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=610", CampaignWebsite = "" }
                     }
                 },
@@ -874,7 +874,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:56",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Anthony W. Phillips", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=686", CampaignWebsite = "" },
+                        new Candidate { Name = "Anthony W. Phillips", Party = "Republican", PhotoUrl = "https://upload.wikimedia.org/wikipedia/commons/d/d3/Anthony_Phillips.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled", CampaignWebsite = "" },
                         new Candidate { Name = "Grace Abitz", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=946", CampaignWebsite = "" }
                     }
                 },
@@ -924,7 +924,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:61",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Bob Donovan", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=739", CampaignWebsite = "" },
+                        new Candidate { Name = "Bob Donovan", Party = "Republican", PhotoUrl = "https://upload.wikimedia.org/wikipedia/commons/b/bb/Bob_Donovan_%28Milwaukee_alderman%29_in_August_2009.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled", CampaignWebsite = "" },
                         new Candidate { Name = "Ben Brist", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=155", CampaignWebsite = "" }
                     }
                 },
@@ -975,7 +975,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Gina Cefalu Paulick", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=306", CampaignWebsite = "" },
-                        new Candidate { Name = "Greta Neubauer", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=923", CampaignWebsite = "" }
+                        new Candidate { Name = "Greta Neubauer", Party = "Democratic", PhotoUrl = "https://upload.wikimedia.org/wikipedia/commons/5/50/Greta_Neubauer_Bans_off_our_Bodies_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail_unscaled", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -1004,7 +1004,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:69",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Josh Kelley", Party = "Independent", PhotoUrl = "https://picsum.photos/200?random=299", CampaignWebsite = "" },
+                        new Candidate { Name = "Josh Kelley", Party = "Independent", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/23/JoshKelleyMarch2007.jpg/500px-JoshKelleyMarch2007.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Karen Hurd", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=163", CampaignWebsite = "" },
                         new Candidate { Name = "Roger Halls", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=479", CampaignWebsite = "" }
                     }
@@ -1015,7 +1015,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:70",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Nancy VanderMeer", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=103", CampaignWebsite = "" },
+                        new Candidate { Name = "Nancy VanderMeer", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/4d/Fort_McCoy_Soldiers_support_Sparta_Memorial_Day_events_Nancy_VanderMeer_%28cropped%29.jpg/500px-Fort_McCoy_Soldiers_support_Sparta_Memorial_Day_events_Nancy_VanderMeer_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" },
                         new Candidate { Name = "Stephanie Stuve Bodeen", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=776", CampaignWebsite = "" }
                     }
                 },
@@ -1086,7 +1086,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Jane McCormick", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=598", CampaignWebsite = "" },
-                        new Candidate { Name = "Renuka Mayadev", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=361", CampaignWebsite = "" }
+                        new Candidate { Name = "Renuka Mayadev", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9b/Rep_Renuka_Mayadev_at_Black_Advocacy_Day_at_the_Capital%2C_Madison%2C_WI_022626.jpg/500px-Rep_Renuka_Mayadev_at_Black_Advocacy_Day_at_the_Capital%2C_Madison%2C_WI_022626.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -1214,7 +1214,7 @@ namespace Coffeehouse.Api.Data
                     Candidates = new List<Candidate>
                     {
                         new Candidate { Name = "Jessica Henderson", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=563", CampaignWebsite = "" },
-                        new Candidate { Name = "Amaad Rivera-Wagner", Party = "Democratic", PhotoUrl = "https://picsum.photos/200?random=726", CampaignWebsite = "" }
+                        new Candidate { Name = "Amaad Rivera-Wagner", Party = "Democratic", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/fa/Amaad_Rivera_Wagner_at_IOP_Urban_Policy_Summit_%28cropped%29.jpg/500px-Amaad_Rivera_Wagner_at_IOP_Urban_Policy_Summit_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 },
                 new Contest
@@ -1303,7 +1303,7 @@ namespace Coffeehouse.Api.Data
                     OcdId = "ocd-division/country:us/state:wi/sldl:99",
                     Candidates = new List<Candidate>
                     {
-                        new Candidate { Name = "Barbara Dittrich", Party = "Republican", PhotoUrl = "https://picsum.photos/200?random=727", CampaignWebsite = "" }
+                        new Candidate { Name = "Barbara Dittrich", Party = "Republican", PhotoUrl = "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/94/Barbara_Dittrich_%28cropped%29.jpg/500px-Barbara_Dittrich_%28cropped%29.jpg?utm_source=en.wikipedia.org&utm_campaign=api&utm_content=thumbnail", CampaignWebsite = "" }
                     }
                 }
             };

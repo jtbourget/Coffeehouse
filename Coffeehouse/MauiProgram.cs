@@ -1,3 +1,6 @@
+using Coffeehouse.Services;
+using Coffeehouse.ViewModels;
+using Coffeehouse.Views;
 using Microsoft.Extensions.Logging;
 
 namespace Coffeehouse
@@ -24,31 +27,69 @@ namespace Coffeehouse
             builder.Logging.SetMinimumLevel(LogLevel.Information);
 #endif
 
-            // Services
-            // When using an actual Android phone over wireless adb (with adb reverse), localhost:5032 forwards to the PC.
-            // On standard emulators without port reverse, 10.0.2.2 is used.
-            var baseAddress = "http://localhost:5032";
-            builder.Services.AddHttpClient("CoffeehouseApi", client =>
+            // --- Authentication & Token Storage Services ---
+            builder.Services.AddSingleton<ITokenStore, SecureTokenStore>();
+            builder.Services.AddTransient<AuthTokenHandler>();
+
+            // --- HTTP Client Registrations ---
+            var baseUri = new Uri(ApiSettings.BaseAddress);
+
+            // Auth client (without AuthTokenHandler)
+            var authHttpBuilder = builder.Services.AddHttpClient<IAuthService, AuthService>(client =>
             {
-                client.BaseAddress = new Uri(baseAddress);
+                client.BaseAddress = baseUri;
+                client.Timeout = ApiSettings.RequestTimeout;
             });
-            builder.Services.AddSingleton<Services.IApiService, Services.ApiService>();
 
-            // ViewModels
-            builder.Services.AddTransient<ViewModels.AddressViewModel>();
-            builder.Services.AddTransient<ViewModels.BallotViewModel>();
-            builder.Services.AddTransient<ViewModels.CandidateDetailViewModel>();
-            builder.Services.AddTransient<ViewModels.ElectionsViewModel>();
-            builder.Services.AddTransient<ViewModels.VotingListViewModel>();
+            // Candidate profile client (with AuthTokenHandler)
+            var candidateHttpBuilder = builder.Services.AddHttpClient<ICandidateProfileApiClient, CandidateProfileApiClient>(client =>
+            {
+                client.BaseAddress = baseUri;
+                client.Timeout = ApiSettings.RequestTimeout;
+            }).AddHttpMessageHandler<AuthTokenHandler>();
 
-            // Pages
+            // Legacy CoffeehouseApi client for ballot and address features
+            var legacyHttpBuilder = builder.Services.AddHttpClient("CoffeehouseApi", client =>
+            {
+                client.BaseAddress = baseUri;
+                client.Timeout = ApiSettings.RequestTimeout;
+            });
+
+#if DEBUG
+            authHttpBuilder.ConfigurePrimaryHttpMessageHandler(() => new DevCertificateHandler());
+            candidateHttpBuilder.ConfigurePrimaryHttpMessageHandler(() => new DevCertificateHandler());
+            legacyHttpBuilder.ConfigurePrimaryHttpMessageHandler(() => new DevCertificateHandler());
+#endif
+
+            builder.Services.AddSingleton<IApiService, ApiService>();
+
+            // --- ViewModels ---
+            builder.Services.AddTransient<AddressViewModel>();
+            builder.Services.AddTransient<BallotViewModel>();
+            builder.Services.AddTransient<CandidateDetailViewModel>();
+            builder.Services.AddTransient<ElectionsViewModel>();
+            builder.Services.AddTransient<VotingListViewModel>();
+
+            // Candidate profile management ViewModels
+            builder.Services.AddTransient<LoginViewModel>();
+            builder.Services.AddTransient<CandidateProfilesListViewModel>();
+            builder.Services.AddTransient<CandidateProfileDetailViewModel>();
+            builder.Services.AddTransient<CandidateProfileEditViewModel>();
+
+            // --- Pages ---
             builder.Services.AddTransient<MainPage>();
-            builder.Services.AddTransient<Views.AddressPage>();
-            builder.Services.AddTransient<Views.BallotPage>();
-            builder.Services.AddTransient<Views.CandidateDetailPage>();
-            builder.Services.AddTransient<Views.ElectionsPage>();
-            builder.Services.AddTransient<Views.VotingListPage>();
-            builder.Services.AddTransient<Views.VotingListDetailsPage>();
+            builder.Services.AddTransient<AddressPage>();
+            builder.Services.AddTransient<BallotPage>();
+            builder.Services.AddTransient<CandidateDetailPage>();
+            builder.Services.AddTransient<ElectionsPage>();
+            builder.Services.AddTransient<VotingListPage>();
+            builder.Services.AddTransient<VotingListDetailsPage>();
+
+            // Candidate profile management Pages
+            builder.Services.AddTransient<LoginPage>();
+            builder.Services.AddTransient<CandidateProfilesListPage>();
+            builder.Services.AddTransient<CandidateProfileDetailPage>();
+            builder.Services.AddTransient<CandidateProfileEditPage>();
 
             return builder.Build();
         }

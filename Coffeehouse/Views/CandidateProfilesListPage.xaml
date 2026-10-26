@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Coffeehouse.ViewModels"
+             xmlns:models="clr-namespace:Coffeehouse.Models"
+             x:Class="Coffeehouse.Views.CandidateProfilesListPage"
+             x:DataType="vm:CandidateProfilesListViewModel"
+             Title="Candidate Profiles">
+
+    <Grid RowDefinitions="Auto,Auto,*" Padding="16" RowSpacing="12">
+        
+        <!-- Header Controls: Auth & Add Button -->
+        <Grid Grid.Row="0" ColumnDefinitions="*,Auto,Auto" ColumnSpacing="10">
+            <Label Grid.Column="0"
+                   Text="Candidate Profiles"
+                   FontSize="24"
+                   FontAttributes="Bold"
+                   VerticalOptions="Center" />
+
+            <Button Grid.Column="1"
+                    Text="+ Add"
+                    Command="{Binding AddProfileCommand}"
+                    FontSize="14"
+                    HeightRequest="40"
+                    Padding="14,0" />
+
+            <Button Grid.Column="2"
+                    Text="{Binding AuthButtonText}"
+                    Command="{Binding AuthActionCommand}"
+                    FontSize="14"
+                    HeightRequest="40"
+                    Padding="14,0" />
+        </Grid>
+
+        <!-- Search Bar -->
+        <SearchBar Grid.Row="1"
+                   Placeholder="Search candidates or districts..."
+                   Text="{Binding SearchText}" />
+
+        <!-- Profile List & Pull to Refresh -->
+        <RefreshView Grid.Row="2"
+                     IsRefreshing="{Binding IsBusy}"
+                     Command="{Binding LoadProfilesCommand}">
+            
+            <Grid>
+                <!-- Error Banner -->
+                <Border BackgroundColor="#FCE8E6"
+                        Stroke="#D93025"
+                        StrokeThickness="1"
+                        StrokeShape="RoundRectangle 8"
+                        Padding="16"
+                        Margin="0,20,0,0"
+                        VerticalOptions="Start"
+                        IsVisible="{Binding HasError}">
+                    <VerticalStackLayout Spacing="8">
+                        <Label Text="{Binding ErrorMessage}"
+                               TextColor="#D93025"
+                               FontSize="14"
+                               HorizontalOptions="Center" />
+                        <Button Text="Retry"
+                                Command="{Binding LoadProfilesCommand}"
+                                HorizontalOptions="Center" />
+                    </VerticalStackLayout>
+                </Border>
+
+                <CollectionView ItemsSource="{Binding Profiles}"
+                                SelectionMode="None">
+                    <CollectionView.ItemTemplate>
+                        <DataTemplate x:DataType="models:CandidateProfileDisplay">
+                            <Border Margin="0,6"
+                                    Padding="16"
+                                    StrokeShape="RoundRectangle 10"
+                                    Stroke="#E0E0E0"
+                                    BackgroundColor="{AppThemeBinding Light=White, Dark=#2C2C2C}">
+                                
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer 
+                                        Command="{Binding Source={RelativeSource AncestorType={x:Type vm:CandidateProfilesListViewModel}}, Path=SelectProfileCommand}"
+                                        CommandParameter="{Binding .}" />
+                                </Border.GestureRecognizers>
+
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <VerticalStackLayout Grid.Column="0" Spacing="4">
+                                        <Label Text="{Binding Name}"
+                                               FontSize="18"
+                                               FontAttributes="Bold" />
+                                        <Label Text="{Binding OcdId}"
+                                               FontSize="13"
+                                               TextColor="Gray" />
+                                        <Label Text="{Binding Subtitle}"
+                                               FontSize="14"
+                                               MaxLines="2"
+                                               LineBreakMode="TailTruncation"
+                                               Margin="0,4,0,0" />
+                                    </VerticalStackLayout>
+
+                                    <Label Grid.Column="1"
+                                           Text="➔"
+                                           FontSize="18"
+                                           TextColor="Gray"
+                                           VerticalOptions="Center" />
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </CollectionView.ItemTemplate>
+
+                    <CollectionView.EmptyView>
+                        <VerticalStackLayout Padding="40" Spacing="10" HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label Text="No candidate profiles found."
+                                   FontSize="16"
+                                   TextColor="Gray"
+                                   HorizontalOptions="Center" />
+                        </VerticalStackLayout>
+                    </CollectionView.EmptyView>
+                </CollectionView>
+            </Grid>
+        </RefreshView>
+    </Grid>
+</ContentPage>

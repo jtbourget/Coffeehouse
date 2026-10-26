@@ -8,13 +8,21 @@
     Title="Coffeehouse">
 
     <TabBar>
-        <Tab Icon="home.png">
+        <Tab Title="Candidates">
             <ShellContent
+                Title="Candidates"
+                ContentTemplate="{DataTemplate views:CandidateProfilesListPage}"
+                Route="CandidateProfilesListPage" />
+        </Tab>
+        <Tab Title="Address" Icon="home.png">
+            <ShellContent
+                Title="Address"
                 ContentTemplate="{DataTemplate views:AddressPage}"
                 Route="AddressPage" />
         </Tab>
-        <Tab Icon="ballot.png">
+        <Tab Title="Voting List" Icon="ballot.png">
             <ShellContent
+                Title="Voting List"
                 ContentTemplate="{DataTemplate views:VotingListPage}"
                 Route="VotingListPage" />
         </Tab>

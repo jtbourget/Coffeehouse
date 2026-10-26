@@ -367,3 +367,8 @@ Data/*.json
 Data/*.tmp
 **/Data/*.json
 **/Data/*.tmp
+
+# Environment and secrets
+.env
+.env.*
+*.lock

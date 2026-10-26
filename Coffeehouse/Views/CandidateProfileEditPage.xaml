@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:Coffeehouse.ViewModels"
+             x:Class="Coffeehouse.Views.CandidateProfileEditPage"
+             x:DataType="vm:CandidateProfileEditViewModel"
+             Title="{Binding PageTitle}">
+
+    <ScrollView>
+        <VerticalStackLayout Padding="24" Spacing="16">
+
+            <!-- General Error Banner -->
+            <Border BackgroundColor="#FCE8E6"
+                    Stroke="#D93025"
+                    StrokeThickness="1"
+                    StrokeShape="RoundRectangle 8"
+                    Padding="12"
+                    IsVisible="{Binding HasGeneralError}">
+                <Label Text="{Binding GeneralError}"
+                       TextColor="#D93025"
+                       FontSize="14"
+                       HorizontalOptions="Center" />
+            </Border>
+
+            <!-- Name Field -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Candidate Name *" FontAttributes="Bold" FontSize="14" />
+                <Entry Text="{Binding Name}"
+                       Placeholder="e.g. Jane Doe"
+                       ReturnType="Next" />
+                <Label Text="{Binding NameError}"
+                       TextColor="#D93025"
+                       FontSize="12"
+                       IsVisible="{Binding HasNameError}" />
+            </VerticalStackLayout>
+
+            <!-- District / OCD ID Field -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="District Identifier (OCD-ID) *" FontAttributes="Bold" FontSize="14" />
+                <Entry Text="{Binding OcdId}"
+                       Placeholder="e.g. ocd-division/country:us/state:wi/cd:2"
+                       ReturnType="Next" />
+                <Label Text="{Binding OcdIdError}"
+                       TextColor="#D93025"
+                       FontSize="12"
+                       IsVisible="{Binding HasOcdIdError}" />
+            </VerticalStackLayout>
+
+            <!-- Bio Field -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Biography &amp; Platform" FontAttributes="Bold" FontSize="14" />
+                <Editor Text="{Binding Bio}"
+                        Placeholder="Enter background, priorities, and community involvement..."
+                        HeightRequest="120"
+                        AutoSize="Disabled" />
+                <Label Text="{Binding BioError}"
+                       TextColor="#D93025"
+                       FontSize="12"
+                       IsVisible="{Binding HasBioError}" />
+            </VerticalStackLayout>
+
+            <!-- Website URL Field -->
+            <VerticalStackLayout Spacing="4">
+                <Label Text="Campaign Website URL" FontAttributes="Bold" FontSize="14" />
+                <Entry Text="{Binding WebsiteUrl}"
+                       Placeholder="https://example.com"
+                       Keyboard="Url"
+                       ReturnType="Done" />
+                <Label Text="{Binding WebsiteUrlError}"
+                       TextColor="#D93025"
+                       FontSize="12"
+                       IsVisible="{Binding HasWebsiteUrlError}" />
+            </VerticalStackLayout>
+
+            <!-- Save Button -->
+            <Button Text="Save Profile"
+                    Command="{Binding SaveCommand}"
+                    Margin="0,16,0,0"
+                    HeightRequest="50"
+                    FontSize="16"
+                    FontAttributes="Bold"
+                    IsEnabled="{Binding IsNotBusy}" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}"
+                               IsVisible="{Binding IsBusy}"
+                               HorizontalOptions="Center" />
+
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
